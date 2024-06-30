@@ -17,50 +17,11 @@ import java.util.List;
 @Component
 public class InitialSetUp {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
+
 
     @EventListener
     @Transactional
     public void onApplicationReady(ApplicationReadyEvent applicationReadyEvent) {
-        Role userRole = createAndSaveRole(Roles.USER_ROLE.name());
-        Role adminRole = createAndSaveRole(Roles.ADMIN_ROLE.name());
-
-
-        List<MyUser> users = new ArrayList<>();
-        MyUser admin = new MyUser("admin");
-        admin.setRoles(List.of(adminRole));
-        users.add(admin);
-
-        for(int i = 0 ; i < 20 ; i++){
-            MyUser user = new MyUser("User " + i);
-            user.setRoles(List.of(userRole));
-            users.add(user);
-        }
-
-        addAll(users);
-
-
-
-    }
-
-    @Transactional
-    private MyUser createAndSaveUser(String name, List<Role> roles) {
-        MyUser user = new MyUser(name);
-        user.setRoles(roles);
-        return userRepository.save(user);
-    }
-
-    @Transactional
-    private void  addAll(List<MyUser> users){
-        userRepository.saveAllAndFlush(users);
-    }
-
-    @Transactional
-    private Role createAndSaveRole(String name) {
-        Role role = new Role(name);
-        return roleRepository.save(role);
+        System.out.println("****APPLICATION HAS STARTED****");
     }
 }

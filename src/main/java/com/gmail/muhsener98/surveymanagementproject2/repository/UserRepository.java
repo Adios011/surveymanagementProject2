@@ -10,8 +10,11 @@ public interface UserRepository  extends JpaRepository<MyUser,Long> {
 
 
 
-//    @EntityGraph(attributePaths = {"roles"} , type = EntityGraph.EntityGraphType.LOAD)
-    List<MyUser> findAll();
+
+
+    MyUser findByUserId(String userId);
+
+    boolean existsByEmailIgnoreCase(String email);
 
 
 

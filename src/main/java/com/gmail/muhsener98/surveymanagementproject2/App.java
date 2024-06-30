@@ -8,17 +8,18 @@ import com.gmail.muhsener98.surveymanagementproject2.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.query.QueryLookupStrategy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@SpringBootApplication
-@EnableJpaRepositories(queryLookupStrategy = QueryLookupStrategy.Key.CREATE)
+@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 public class App {
 
 	public static void main(String[] args) {
@@ -26,14 +27,9 @@ public class App {
 	}
 
 
-	@Bean
-	CommandLineRunner runner(ApplicationContext context){
-		return args -> {
-
-
-
-
-			};
+	@Bean(name = "passwordEncoder")
+	public BCryptPasswordEncoder bCryptPasswordEncoder(){
+		return new BCryptPasswordEncoder();
 	}
 
 }
