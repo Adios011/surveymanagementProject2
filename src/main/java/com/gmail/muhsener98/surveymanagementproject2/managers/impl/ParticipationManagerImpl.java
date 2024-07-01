@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service("participationManager")
 public class ParticipationManagerImpl implements ParticipationManager {
@@ -70,8 +68,30 @@ public class ParticipationManagerImpl implements ParticipationManager {
         if(!hasParticipatedBefore(user,survey))
             throw   new NoSuchElementException("No such participaton found.");
 
+//        System.out.println("******findSurveyForParticipation*****");
+//        surveyService.findSurveyForParticipation(surveyId);
+//        System.out.println("******findSurveyForParticipation*****");
 
-        return participationService.findParticipationWithAllDetails(user , survey  );
+        Participation participation = participationService.findParticipationWithAllDetails(user,survey);
+
+//        SurveySpecificParticipationRest detailsToBeReturned = new SurveySpecificParticipationRest();
+//        SurveyRestWithoutDetails surveyRestWithoutDetails = new SurveyRestWithoutDetails();
+//        BeanUtils.copyProperties(survey , surveyRestWithoutDetails);
+//        detailsToBeReturned.setSurvey(surveyRestWithoutDetails);
+//
+//        List<Answer> answers = participation.getAnswers();
+//        List<QuestionRest> questionRests = new ArrayList<>();
+//        Map<Long,String> questionIdAnswerTextMap = new HashMap<>();
+//        for (Answer answer : answers) {
+//            Question question = answer.getQuestion();
+//            questionRests.add(QuestionMapper.INSTANCE.toRest(question));
+//            questionIdAnswerTextMap.put(question.getId() , answer.getAnswerText());
+//        }
+//
+//        detailsToBeReturned.setQuestions(questionRests);
+//        detailsToBeReturned.setQuestionIdAnswerTextMap(questionIdAnswerTextMap);
+
+        return participation;
 
     }
 

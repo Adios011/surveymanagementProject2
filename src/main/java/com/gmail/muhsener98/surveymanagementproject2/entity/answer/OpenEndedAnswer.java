@@ -45,7 +45,7 @@ public class OpenEndedAnswer extends Answer{
     }
 
     @Override
-    public String answerToString() {
+    public String getAnswerText() {
         return text;
     }
 }

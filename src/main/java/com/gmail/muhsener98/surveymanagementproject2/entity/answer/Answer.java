@@ -40,7 +40,7 @@ public abstract class Answer {
 
     public abstract void delete();
     public abstract void update(AnswerForm answerForm);
-    public abstract String answerToString();
+    public abstract String getAnswerText();
 
     public Answer (){
 
