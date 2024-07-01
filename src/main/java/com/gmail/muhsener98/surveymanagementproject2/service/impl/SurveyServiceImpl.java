@@ -10,9 +10,12 @@ import com.gmail.muhsener98.surveymanagementproject2.service.SurveyService;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.survey.SurveyCreationForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -39,6 +42,8 @@ public class SurveyServiceImpl implements SurveyService {
         if(survey == null)
             throw new SurveyNotFoundException(surveyId);
 
+
+
         return survey;
     }
 
@@ -57,6 +62,16 @@ public class SurveyServiceImpl implements SurveyService {
         Participation participation = survey.participate(answerFormMap);
         participation.setUser(myUser);
         return participation;
+    }
+
+    @Override
+    public List<Survey> findAllWithoutAssociationsByOpenStatus(String openStatus, int page, int limit) {
+        Pageable pageable = PageRequest.of(page,limit);
+
+        List<Survey> surveys = surveyRepository.findAllByOpenStatus(openStatus ,pageable);
+
+        return surveys;
+
     }
 
 

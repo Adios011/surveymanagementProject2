@@ -14,7 +14,7 @@ public abstract class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id ;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "questions_id")
     private Question question;
 
@@ -40,6 +40,7 @@ public abstract class Answer {
 
     public abstract void delete();
     public abstract void update(AnswerForm answerForm);
+    public abstract String answerToString();
 
     public Answer (){
 

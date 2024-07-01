@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -47,5 +48,25 @@ public class SurveyController {
 
 
         return ResponseEntity.ok(responseBody);
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<SurveyRestWithoutDetails>> getAllSurveyByOpenStatus(@RequestParam(name = "openStatus", defaultValue = "open") String openStatus,
+                                                                   @RequestParam(name = "page", defaultValue = "0") int page,
+                                                                   @RequestParam(name = "limit", defaultValue = "10") int limit) {
+
+        List<Survey> surveys = surveyService.findAllWithoutAssociationsByOpenStatus(openStatus , page , limit);
+
+        List<SurveyRestWithoutDetails> responseBody = new ArrayList<>();
+        surveys.forEach(survey -> {
+            SurveyRestWithoutDetails surveyRestWithoutDetails = new SurveyRestWithoutDetails();
+            BeanUtils.copyProperties( survey ,  surveyRestWithoutDetails);
+            responseBody.add(surveyRestWithoutDetails);
+        });
+
+        return ResponseEntity.ok(responseBody);
+
+
     }
 }

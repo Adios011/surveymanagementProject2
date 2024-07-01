@@ -5,11 +5,17 @@ import com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey;
 import com.gmail.muhsener98.surveymanagementproject2.entity.user.MyUser;
 import com.gmail.muhsener98.surveymanagementproject2.repository.ParticipationRepository;
 import com.gmail.muhsener98.surveymanagementproject2.service.ParticipationService;
+import com.gmail.muhsener98.surveymanagementproject2.service.QuestionService;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
+import jakarta.servlet.http.Part;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.List;
 import java.util.Map;
 
 @Service("participationService")
@@ -17,6 +23,9 @@ public class ParticipationServiceImpl implements ParticipationService {
 
     @Autowired
     private ParticipationRepository participationRepository;
+
+    @Autowired
+    private QuestionService questionService;
 
     @Override
     public boolean checkParticipationExists(MyUser user, Survey survey) {
@@ -41,6 +50,30 @@ public class ParticipationServiceImpl implements ParticipationService {
 
     public void editParticipation(Participation participation, Map<Long, AnswerForm> answerFormMap){
         participation.edit(answerFormMap);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Survey> findAllSurveysParticipatedBy(MyUser user, int page, int limit) {
+        Pageable pageable = PageRequest.of(page,limit);
+
+        return participationRepository.findAllSurveysByUser(user, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Survey> findAllSurveysParticipatedBy(MyUser user) {
+        return participationRepository.findAllSurveysByUser(user);
+    }
+
+    @Override
+    @Transactional
+    public Participation findParticipationWithAllDetails(MyUser user, Survey survey) {
+        questionService.loadAssociationsOfSubQuestions(survey.getSurveyId());
+        Participation participation = participationRepository.findWithAnswersByUserAndSurvey(user,survey);
+
+
+        return participation;
     }
 
 

@@ -11,30 +11,37 @@ import jakarta.servlet.http.Part;
 import java.util.List;
 import java.util.Map;
 
+@NamedQuery(name = "find_All_Surveys_Participated_By_User_Without_Associations",
+        query = "Select new com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey " +
+                "(s.id, s.surveyId, s.title, s.description, s.closeDate , s.numberOfParticipants) " +
+                "FROM Participation p " +
+                "JOIN p.survey s " +
+                "JOIN p.user u " +
+                "WHERE u = :user")
 @Entity
 @Table(name = "participations")
 public class Participation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id ;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private MyUser user ;
+    private MyUser user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Survey survey;
 
-    @OneToMany(mappedBy = "participation" , cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "participation", cascade = {CascadeType.ALL})
     private List<Answer> answers;
 
-    public Participation(){
+    public Participation() {
 
     }
 
 
     public Participation(Survey survey, List<Answer> answers) {
-        this(null , survey , answers);
+        this(null, survey, answers);
     }
 
     public Participation(MyUser user, Survey survey, List<Answer> answers) {
@@ -80,7 +87,7 @@ public class Participation {
             Question question = answer.getQuestion();
             AnswerForm answerForm = answerFormMap.get(question.getId());
 
-            if(answerForm == null)
+            if (answerForm == null)
                 continue;
 
             answer.update(answerForm);

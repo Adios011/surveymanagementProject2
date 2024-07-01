@@ -43,4 +43,9 @@ public class OpenEndedAnswer extends Answer{
     public void update(AnswerForm answerForm) {
         this.text = answerForm.getOpenEndedAnswerText();
     }
+
+    @Override
+    public String answerToString() {
+        return text;
+    }
 }

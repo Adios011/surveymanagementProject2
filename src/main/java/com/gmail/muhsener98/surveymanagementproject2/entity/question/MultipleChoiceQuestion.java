@@ -3,16 +3,18 @@ package com.gmail.muhsener98.surveymanagementproject2.entity.question;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.Answer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.MultipleChoiceAnswer;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.hibernate.annotations.BatchSize;
 
 import java.util.List;
 
 @Entity
 @Table(name = "multiple_choice_questions")
+@NamedQuery(name = "load_multiple_choice_question_with_all_associations_by_survey_id" ,
+query = "SELECT mcq FROM MultipleChoiceQuestion mcq " +
+        "LEFT JOIN mcq.survey s " +
+        "JOIN FETCH mcq.options o " +
+        "WHERE s.surveyId = :surveyId")
 public class MultipleChoiceQuestion extends Question {
 
 

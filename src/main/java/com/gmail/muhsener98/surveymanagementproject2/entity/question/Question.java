@@ -5,9 +5,11 @@ import com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
 import jakarta.persistence.*;
 
+
 @Entity
 @Table(name = "questions")
 @Inheritance(strategy = InheritanceType.JOINED)
+
 public abstract class Question {
 
     @Id

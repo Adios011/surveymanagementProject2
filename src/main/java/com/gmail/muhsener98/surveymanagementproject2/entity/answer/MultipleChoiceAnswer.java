@@ -50,4 +50,9 @@ public class MultipleChoiceAnswer extends Answer{
 
         this.option = newOption;
     }
+
+    @Override
+    public String answerToString() {
+        return option.getOptionText();
+    }
 }

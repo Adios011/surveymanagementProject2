@@ -18,4 +18,8 @@ public interface ParticipationService {
      void editParticipation(Participation participation , Map<Long, AnswerForm> answerFormMap);
 
 
+    List<Survey> findAllSurveysParticipatedBy(MyUser user, int page, int limit);
+    List<Survey> findAllSurveysParticipatedBy(MyUser user);
+
+    Participation findParticipationWithAllDetails(MyUser user, Survey survey);
 }

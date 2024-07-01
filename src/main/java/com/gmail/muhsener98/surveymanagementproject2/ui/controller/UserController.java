@@ -1,7 +1,10 @@
 package com.gmail.muhsener98.surveymanagementproject2.ui.controller;
 
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.Answer;
+import com.gmail.muhsener98.surveymanagementproject2.entity.participation.Participation;
+import com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey;
 import com.gmail.muhsener98.surveymanagementproject2.managers.ParticipationManager;
+import com.gmail.muhsener98.surveymanagementproject2.mapper.SurveyMapper;
 import com.gmail.muhsener98.surveymanagementproject2.service.RegistrationService;
 import com.gmail.muhsener98.surveymanagementproject2.service.UserService;
 import com.gmail.muhsener98.surveymanagementproject2.shared.dto.UserDto;
@@ -11,11 +14,16 @@ import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.error.Use
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.operations.OperationNames;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.operations.OperationStatus;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.operations.OperationStatusModel;
+import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey.SurveyRestWithoutDetails;
+import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey.SurveySpecificParticipationRest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,16 +59,67 @@ public class UserController {
                                                                     @PathVariable(name = "surveyId") String surveyId,
                                                                     @RequestBody List<AnswerForm> answerFormList) {
 
-        Map<Long,AnswerForm> answerFormMap = new HashMap<>();
+        Map<Long, AnswerForm> answerFormMap = new HashMap<>();
         answerFormList.forEach(answerForm -> {
-            answerFormMap.put(answerForm.getQuestionId() , answerForm);
+            answerFormMap.put(answerForm.getQuestionId(), answerForm);
         });
 
-        participationManager.handleParticipation(userId,surveyId,answerFormMap);
+        participationManager.handleParticipation(userId, surveyId, answerFormMap);
 
-        OperationStatusModel responseModel = new OperationStatusModel(OperationNames.SURVEY_PARTICIPATING , OperationStatus.SUCCESS);
+        OperationStatusModel responseModel = new OperationStatusModel(OperationNames.SURVEY_PARTICIPATING, OperationStatus.SUCCESS);
         return ResponseEntity.ok(responseModel);
 
 
     }
+
+
+    @GetMapping("/{userId}/surveys")
+    public ResponseEntity<List<SurveyRestWithoutDetails>> getParticipatedSurveysWithoutDetails(@PathVariable(name = "userId") String userId,
+                                                                                               @RequestParam(name = "page", defaultValue = "0") int page,
+                                                                                               @RequestParam(name = "limit", defaultValue = "10") int limit) {
+
+        List<Survey> surveys = participationManager.findAllSurveysParticipatedBy(userId, page, limit);
+
+        List<SurveyRestWithoutDetails> responseBody = new ArrayList<>();
+
+        surveys.forEach(survey -> {
+            SurveyRestWithoutDetails surveyRestWithoutDetails = new SurveyRestWithoutDetails();
+            BeanUtils.copyProperties(survey, surveyRestWithoutDetails);
+            responseBody.add(surveyRestWithoutDetails);
+        });
+
+        return ResponseEntity.ok(responseBody);
+
+    }
+
+
+    @GetMapping("/{userId}/surveys/{surveyId}")
+    @Transactional
+    public ResponseEntity<SurveySpecificParticipationRest> getUserParticipationForSpecificSurvey(@PathVariable(name = "userId") String userId,
+                                                                                 @PathVariable(name = "surveyId") String surveyId) {
+        Participation userParticipation = participationManager.findUserParticipation(userId , surveyId);
+
+        SurveySpecificParticipationRest surveySpecificParticipationRest = new SurveySpecificParticipationRest();
+
+        System.out.println("****ANKETI MAPLERKEN***");
+        surveySpecificParticipationRest.setSurveyRest(SurveyMapper.INSTANCE.toRest(userParticipation.getSurvey()));
+        System.out.println("****ANKETI MAPLERKEN***");
+
+
+        System.out.println("************CEVAPLARI MAPLERKEN************");
+        List<Answer> answers = userParticipation.getAnswers();
+        Map<Long, String> map = new HashMap<>();
+
+        for (Answer answer : answers) {
+            map.put(answer.getQuestion().getId() , answer.answerToString());
+        }
+
+        surveySpecificParticipationRest.setQuestionIdAnswerTextMap(map);
+        System.out.println("************CEVAPLARI MAPLERKEN************");
+
+
+        return ResponseEntity.ok(surveySpecificParticipationRest);
+
+    }
+
 }

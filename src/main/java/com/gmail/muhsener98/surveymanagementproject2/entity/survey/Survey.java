@@ -38,6 +38,19 @@ public class Survey {
     private List<Question> questions;
 
 
+    public Survey(){
+
+    }
+
+    public Survey(Long id, String surveyId, String title, String description, Date closeDate, int numberOfParticipants) {
+        this.id = id;
+        this.surveyId = surveyId;
+        this.title = title;
+        this.description = description;
+        this.closeDate = closeDate;
+        this.numberOfParticipants = numberOfParticipants;
+    }
+
     public boolean canBeParticipatedIn() {
         return isOpen();
     }
