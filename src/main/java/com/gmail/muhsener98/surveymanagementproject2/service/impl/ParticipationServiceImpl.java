@@ -68,16 +68,26 @@ public class ParticipationServiceImpl implements ParticipationService {
 
     @Override
     @Transactional
-    public Participation findParticipationWithAllDetails(MyUser user, Survey survey) {
-        System.out.println("****loadAssocationsOFQuestions******");
-        questionService.loadAssociationsOfSubQuestionsForParticipation(survey.getSurveyId());
-        System.out.println("****loadAssocationsOFQuestions******");
+    public Participation findParticipationWithAnswers(MyUser user, Survey survey) {
+//        System.out.println("****loadAssocationsOFQuestions******");
+//        questionService.loadAssociationsOfSubQuestionsForParticipation(survey.getSurveyId());
+//        System.out.println("****loadAssocationsOFQuestions******");
         System.out.println("****findWithAnswersByUserAndSurvey******");
         Participation participation = participationRepository.findWithAnswersByUserAndSurvey(user,survey);
         System.out.println("****findWithAnswersByUserAndSurvey******");
 
 
         return participation;
+    }
+
+    @Override
+    @Transactional
+    public void delete(Participation participation) {
+        if(participation == null )
+            return;
+
+        participation.delete();
+        participationRepository.delete(participation);
     }
 
 

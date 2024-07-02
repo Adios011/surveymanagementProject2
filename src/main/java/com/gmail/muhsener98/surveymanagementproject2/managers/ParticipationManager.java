@@ -15,4 +15,6 @@ public interface ParticipationManager {
      List<Survey> findAllSurveysParticipatedBy(String userId);
 
      Participation findUserParticipation(String userId, String surveyId);
+
+     void withdrawFromParticipation(String userId , String surveyId);
 }

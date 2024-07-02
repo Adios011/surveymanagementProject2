@@ -19,6 +19,8 @@ public interface SurveyService {
 
      Survey findSurveyWithoutAssociations(String surveyId);
 
+     Survey findSurveyWithAllAssociations(String surveyId);
+
      Survey findSurveyForAnalysis(String surveyId);
 
      Participation participateIn(MyUser myUser , Survey survey , Map<Long, AnswerForm> answerFormMap);

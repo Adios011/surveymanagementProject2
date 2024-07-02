@@ -3,12 +3,10 @@ package com.gmail.muhsener98.surveymanagementproject2.managers.impl;
 import com.gmail.muhsener98.surveymanagementproject2.entity.participation.Participation;
 import com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey;
 import com.gmail.muhsener98.surveymanagementproject2.entity.user.MyUser;
+import com.gmail.muhsener98.surveymanagementproject2.exceptions.ParticipationNotFoundException;
 import com.gmail.muhsener98.surveymanagementproject2.exceptions.SurveyCannotBeParticipatedIn;
 import com.gmail.muhsener98.surveymanagementproject2.managers.ParticipationManager;
-import com.gmail.muhsener98.surveymanagementproject2.service.ParticipationService;
-import com.gmail.muhsener98.surveymanagementproject2.service.QuestionService;
-import com.gmail.muhsener98.surveymanagementproject2.service.SurveyService;
-import com.gmail.muhsener98.surveymanagementproject2.service.UserService;
+import com.gmail.muhsener98.surveymanagementproject2.service.*;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +28,9 @@ public class ParticipationManagerImpl implements ParticipationManager {
 
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private AnswerService answerService;
 
     @Transactional
     public void handleParticipation(String userId, String surveyId, Map<Long, AnswerForm> answerFormMap) {
@@ -65,14 +66,13 @@ public class ParticipationManagerImpl implements ParticipationManager {
         MyUser user = userService.findUserWithoutDetails(userId);
         Survey survey = surveyService.findSurveyWithoutAssociations(surveyId);
 
-        if(!hasParticipatedBefore(user,survey))
-            throw   new NoSuchElementException("No such participaton found.");
+        validateHasParticipatedBefore(user,survey);
 
 //        System.out.println("******findSurveyForParticipation*****");
 //        surveyService.findSurveyForParticipation(surveyId);
 //        System.out.println("******findSurveyForParticipation*****");
 
-        Participation participation = participationService.findParticipationWithAllDetails(user,survey);
+        Participation participation = findParticipationForUserAnswers(user,survey);
 
 //        SurveySpecificParticipationRest detailsToBeReturned = new SurveySpecificParticipationRest();
 //        SurveyRestWithoutDetails surveyRestWithoutDetails = new SurveyRestWithoutDetails();
@@ -93,6 +93,48 @@ public class ParticipationManagerImpl implements ParticipationManager {
 
         return participation;
 
+    }
+
+
+    private Participation findParticipationForUserAnswers(MyUser user , Survey survey){
+        //To avoid n+1 query when accessing options of questions.
+        questionService.loadAssociationsOfSubQuestionsForParticipation(survey.getSurveyId());
+        return participationService.findParticipationWithAnswers(user,survey);
+    }
+
+    @Override
+    @Transactional
+    public void withdrawFromParticipation(String userId, String surveyId ) {
+        MyUser user = userService.findUserWithoutDetails(userId);
+        Survey survey = surveyService.findSurveyWithoutAssociations(surveyId);
+        validateParticipationCanBeWithdrawn(survey);
+        validateHasParticipatedBefore(user, survey);
+
+        System.out.println("*******************************************");
+        System.out.println("*******************************************");
+        System.out.println("*******************************************");
+        Participation participation =findParticipationToWithdraw(user,survey);
+        System.out.println("*******************************************");
+        System.out.println("*******************************************");
+        System.out.println("*******************************************");
+
+        participationService.delete( participation);
+    }
+
+    private Participation findParticipationToWithdraw(MyUser user, Survey survey){
+        Participation participation = participationService.findParticipationWithAnswers(user,survey);
+        answerService.loadAssociationsOfSubAnswers(participation);
+        return participation;
+    }
+
+    private void validateParticipationCanBeWithdrawn(Survey survey){
+        if(!survey.isOpen())
+            throw new SurveyCannotBeParticipatedIn("survey is closed that's why answers cannot be edited.");
+    }
+
+    private void validateHasParticipatedBefore(MyUser user , Survey survey){
+        if(!hasParticipatedBefore(user , survey))
+            throw new ParticipationNotFoundException("No such participation of " + user.getUserId() + " for survey " + survey.getSurveyId());
     }
 
 

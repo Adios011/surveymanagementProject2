@@ -18,7 +18,6 @@ import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey.Su
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public class UserController {
 
         participationManager.handleParticipation(userId, surveyId, answerFormMap);
 
-        OperationStatusModel responseModel = new OperationStatusModel(OperationNames.SURVEY_PARTICIPATING, OperationStatus.SUCCESS);
+        OperationStatusModel responseModel = new OperationStatusModel(OperationNames.SURVEY_PARTICIPATION, OperationStatus.SUCCESS);
         return ResponseEntity.ok(responseModel);
 
 
@@ -122,15 +121,27 @@ public class UserController {
 
 
     @GetMapping("/{userId}/surveys/{surveyId}")
-    @Transactional
-    public ResponseEntity<ParticipationRest> getUserParticipationForSpecificSurvey2(@PathVariable(name = "userId") String userId,
+
+    public ResponseEntity<ParticipationRest> getParticipatedSurveyWithDetails(@PathVariable(name = "userId") String userId,
                                                                                     @PathVariable(name = "surveyId") String surveyId){
         Participation participation = participationManager.findUserParticipation(userId,surveyId);
 
         ParticipationRest responseBody = ParticipationMapper.INSTANCE.toRest(participation);
 
         return ResponseEntity.ok().body(responseBody);
+    }
+
+
+    @DeleteMapping("/{userId}/surveys/{surveyId}")
+    public ResponseEntity<OperationStatusModel> withdrawFromParticipation(@PathVariable(name = "userId") String userId,
+                                                                          @PathVariable(name = "surveyId") String surveyId){
+
+        participationManager.withdrawFromParticipation(userId , surveyId);
+
+       return ResponseEntity.ok(new OperationStatusModel(OperationNames.SURVEY_WITHDRAW , OperationStatus.SUCCESS));
 
     }
+
+
 
 }

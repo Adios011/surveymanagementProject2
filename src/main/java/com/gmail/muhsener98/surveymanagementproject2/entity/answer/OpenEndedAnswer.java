@@ -38,7 +38,7 @@ public class OpenEndedAnswer extends Answer{
 
     @Override
     public void delete() {
-        text = "";
+        text = null ;
     }
 
     @Override

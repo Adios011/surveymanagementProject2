@@ -2,6 +2,7 @@ package com.gmail.muhsener98.surveymanagementproject2.ui.controller;
 
 import com.gmail.muhsener98.surveymanagementproject2.analysis.SurveyAnalysis;
 import com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey;
+import com.gmail.muhsener98.surveymanagementproject2.managers.AnalysisManager;
 import com.gmail.muhsener98.surveymanagementproject2.mapper.SurveyMapper;
 import com.gmail.muhsener98.surveymanagementproject2.service.SurveyService;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.survey.SurveyCreationForm;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,6 +21,9 @@ public class SurveyController {
 
     @Autowired
     private SurveyService surveyService;
+
+    @Autowired
+    private AnalysisManager analysisManager;
 
 
 
@@ -52,16 +55,10 @@ public class SurveyController {
     public ResponseEntity<List<SurveyRestWithoutAssociations>> getAllSurveyByOpenStatus(@RequestParam(name = "openStatus", defaultValue = "open") String openStatus,
                                                                                         @RequestParam(name = "page", defaultValue = "0") int page,
                                                                                         @RequestParam(name = "limit", defaultValue = "10") int limit) {
-
+        openStatus = openStatus.toUpperCase();
         List<Survey> surveys = surveyService.findAllWithoutAssociationsByOpenStatus(openStatus , page , limit);
 
-        List<SurveyRestWithoutAssociations> responseBody = new ArrayList<>();
-        surveys.forEach(survey -> {
-            SurveyRestWithoutAssociations surveyRestWithoutDetails = new SurveyRestWithoutAssociations();
-            BeanUtils.copyProperties( survey ,  surveyRestWithoutDetails);
-            responseBody.add(surveyRestWithoutDetails);
-        });
-
+        List<SurveyRestWithoutAssociations> responseBody = SurveyMapper.INSTANCE.toRestWithoutAssociations(surveys);
         return ResponseEntity.ok(responseBody);
     }
 
@@ -69,7 +66,7 @@ public class SurveyController {
     @GetMapping("/{surveyId}/analysis")
     public ResponseEntity<SurveyAnalysis> analyzeSurvey(@PathVariable(name = "surveyId") String surveyId){
 
-        SurveyAnalysis responseBody = surveyService.analyzeSurvey(surveyId);
+        SurveyAnalysis responseBody = analysisManager.analyzeSurvey(surveyId);
 
         return ResponseEntity.ok(responseBody);
     }

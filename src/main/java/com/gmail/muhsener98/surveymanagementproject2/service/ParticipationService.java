@@ -4,7 +4,6 @@ import com.gmail.muhsener98.surveymanagementproject2.entity.participation.Partic
 import com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey;
 import com.gmail.muhsener98.surveymanagementproject2.entity.user.MyUser;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -21,5 +20,7 @@ public interface ParticipationService {
     List<Survey> findAllSurveysParticipatedBy(MyUser user, int page, int limit);
     List<Survey> findAllSurveysParticipatedBy(MyUser user);
 
-    Participation findParticipationWithAllDetails(MyUser user, Survey survey);
+    Participation findParticipationWithAnswers(MyUser user, Survey survey);
+
+    void delete(Participation participation);
 }

@@ -6,8 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<Question,Long> {
+
+
 
 
     @Query(name =  "load_multiple_choice_question_with_all_associations_by_survey_id" )
@@ -15,6 +18,9 @@ public interface QuestionRepository extends JpaRepository<Question,Long> {
 
     @Query(name = "load_open_ended_questions_with_all_associations_by_survey_id")
     List<Question> findAllOpenEndedQuestionsBySurveyId(@Param("surveyId") String surveyId);
+
+
+
 
 
 

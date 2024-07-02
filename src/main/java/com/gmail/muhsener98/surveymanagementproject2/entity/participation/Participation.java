@@ -94,5 +94,11 @@ public class Participation {
 
         }
     }
+
+    public void delete() {
+        for (Answer answer : answers) {
+            answer.delete();
+        }
+    }
 }
 

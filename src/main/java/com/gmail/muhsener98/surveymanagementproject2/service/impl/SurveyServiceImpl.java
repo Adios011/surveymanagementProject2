@@ -7,8 +7,10 @@ import com.gmail.muhsener98.surveymanagementproject2.entity.user.MyUser;
 import com.gmail.muhsener98.surveymanagementproject2.exceptions.SurveyNotFoundException;
 import com.gmail.muhsener98.surveymanagementproject2.mapper.SurveyMapper;
 import com.gmail.muhsener98.surveymanagementproject2.repository.SurveyRepository;
+import com.gmail.muhsener98.surveymanagementproject2.repository.specifications.SurveySpecs;
 import com.gmail.muhsener98.surveymanagementproject2.service.QuestionService;
 import com.gmail.muhsener98.surveymanagementproject2.service.SurveyService;
+import com.gmail.muhsener98.surveymanagementproject2.shared.constants.SurveyOpenStatus;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.survey.SurveyCreationForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,13 +73,27 @@ public class SurveyServiceImpl implements SurveyService {
 
 
 
+
     @Transactional(readOnly = true)
     public Survey findSurveyWithoutAssociations(String surveyId){
         Survey survey = surveyRepository.findWithoutAssociationsBySurveyId(surveyId);
-        if(survey == null)
-            throw new SurveyNotFoundException(surveyId);
+        validateSurveyExists(survey, surveyId);
 
         return survey;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Survey findSurveyWithAllAssociations(String surveyId) {
+        Survey survey = surveyRepository.findWithAllAssociationsBySurveyId(surveyId);
+        validateSurveyExists(survey,surveyId);
+
+        return survey;
+    }
+
+    private void validateSurveyExists(Survey survey , String surveyId   ){
+        if(survey == null)
+            throw new SurveyNotFoundException(surveyId);
     }
 
     @Override
@@ -88,10 +104,22 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Survey> findAllWithoutAssociationsByOpenStatus(String openStatus, int page, int limit) {
         Pageable pageable = PageRequest.of(page,limit);
 
-        return surveyRepository.findAllByOpenStatus(openStatus ,pageable);
+        //TODO : Re-implement it later in a more polymorphic way.
+
+        if(openStatus.equals(SurveyOpenStatus.OPEN.name()))
+            return surveyRepository.findAll(SurveySpecs.isOpen() , pageable).getContent();
+        else if(openStatus.equals(SurveyOpenStatus.CLOSED.name()))
+            return surveyRepository.findAll(SurveySpecs.isClosed() , pageable).getContent() ;
+        else if(openStatus.equals(SurveyOpenStatus.ALL.name()))
+            return surveyRepository.findAll(pageable).getContent();
+        else
+            throw new IllegalArgumentException("Unknown survey open status " + openStatus);
+
+
     }
 
 

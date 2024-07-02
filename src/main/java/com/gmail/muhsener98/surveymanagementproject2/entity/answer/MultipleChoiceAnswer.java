@@ -9,6 +9,12 @@ import jakarta.persistence.*;
 @Entity
 //@Table(name = "multiple_choice_answers")
 @DiscriminatorValue("multiple_choice")
+@NamedQuery(name = "load_multiple_choice_answer_with_all_associations_by_participation" ,
+query = "SELECT mca " +
+        "FROM MultipleChoiceAnswer mca " +
+        "JOIN  mca.participation p " +
+        "JOIN FETCH mca.option o " +
+        "WHERE p = :participation")
 public class MultipleChoiceAnswer extends Answer{
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,6 +41,7 @@ public class MultipleChoiceAnswer extends Answer{
     @Override
     public void delete() {
         option.decreaseCounter();
+        option = null ;
     }
 
     @Override
