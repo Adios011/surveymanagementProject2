@@ -1,11 +1,13 @@
 package com.gmail.muhsener98.surveymanagementproject2.service.impl;
 
+import com.gmail.muhsener98.surveymanagementproject2.analysis.SurveyAnalysis;
 import com.gmail.muhsener98.surveymanagementproject2.entity.participation.Participation;
 import com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey;
 import com.gmail.muhsener98.surveymanagementproject2.entity.user.MyUser;
 import com.gmail.muhsener98.surveymanagementproject2.exceptions.SurveyNotFoundException;
 import com.gmail.muhsener98.surveymanagementproject2.mapper.SurveyMapper;
 import com.gmail.muhsener98.surveymanagementproject2.repository.SurveyRepository;
+import com.gmail.muhsener98.surveymanagementproject2.service.QuestionService;
 import com.gmail.muhsener98.surveymanagementproject2.service.SurveyService;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.survey.SurveyCreationForm;
@@ -25,6 +27,9 @@ public class SurveyServiceImpl implements SurveyService {
     @Autowired
     private SurveyRepository surveyRepository;
 
+    @Autowired
+    private QuestionService questionService;
+
 
     @Override
     public Survey createSurvey(SurveyCreationForm surveyCreationForm) {
@@ -42,10 +47,28 @@ public class SurveyServiceImpl implements SurveyService {
         if(survey == null)
             throw new SurveyNotFoundException(surveyId);
 
+        //To avoid n+1 query problem.
+        questionService.loadAssociationsOfSubQuestionsForParticipation(surveyId);
 
+        return survey;
+
+
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public Survey findSurveyForAnalysis(String surveyId){
+        Survey survey = surveyRepository.findWithAllAssociationsBySurveyId(surveyId);
+        if(survey == null)
+            throw new SurveyNotFoundException(surveyId);
+
+        //To avoid n+1 query problem.
+        questionService.loadAssociationsOfSubQuestionsForAnalysis(surveyId);
 
         return survey;
     }
+
 
 
     @Transactional(readOnly = true)
@@ -68,11 +91,18 @@ public class SurveyServiceImpl implements SurveyService {
     public List<Survey> findAllWithoutAssociationsByOpenStatus(String openStatus, int page, int limit) {
         Pageable pageable = PageRequest.of(page,limit);
 
-        List<Survey> surveys = surveyRepository.findAllByOpenStatus(openStatus ,pageable);
-
-        return surveys;
-
+        return surveyRepository.findAllByOpenStatus(openStatus ,pageable);
     }
+
+
+    @Override
+    @Transactional
+    public SurveyAnalysis analyzeSurvey(String surveyId) {
+        Survey survey = findSurveyForAnalysis(surveyId);
+        return survey.analyze();
+    }
+
+
 
 
     private Survey prepareSurveyToSave(SurveyCreationForm surveyCreationForm){
@@ -80,4 +110,8 @@ public class SurveyServiceImpl implements SurveyService {
         survey.setSurveyId("a");
         return survey;
     }
+
+
+
+
 }

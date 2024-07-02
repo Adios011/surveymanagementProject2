@@ -5,6 +5,8 @@ import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.answer.An
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper(uses = {QuestionMapper.class })
 public interface AnswerMapper {
 
@@ -12,4 +14,5 @@ public interface AnswerMapper {
 
 
     AnswerRest toRest(Answer answer);
+    List<AnswerRest> toRests(List<Answer> answers);
 }

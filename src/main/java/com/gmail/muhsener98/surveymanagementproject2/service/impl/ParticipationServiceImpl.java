@@ -70,7 +70,7 @@ public class ParticipationServiceImpl implements ParticipationService {
     @Transactional
     public Participation findParticipationWithAllDetails(MyUser user, Survey survey) {
         System.out.println("****loadAssocationsOFQuestions******");
-        questionService.loadAssociationsOfSubQuestions(survey.getSurveyId());
+        questionService.loadAssociationsOfSubQuestionsForParticipation(survey.getSurveyId());
         System.out.println("****loadAssocationsOFQuestions******");
         System.out.println("****findWithAnswersByUserAndSurvey******");
         Participation participation = participationRepository.findWithAnswersByUserAndSurvey(user,survey);

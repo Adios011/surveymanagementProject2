@@ -1,21 +1,21 @@
 package com.gmail.muhsener98.surveymanagementproject2.ui.model.response.participation;
 
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.answer.AnswerRest;
-import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey.SurveyRestWithoutDetails;
+import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey.SurveyRestWithoutAssociations;
 
 import java.io.Serializable;
 import java.util.List;
 
 public class ParticipationRest implements Serializable {
 
-    private SurveyRestWithoutDetails survey;
+    private SurveyRestWithoutAssociations survey;
     private List<AnswerRest> answers ;
 
-    public SurveyRestWithoutDetails getSurvey() {
+    public SurveyRestWithoutAssociations getSurvey() {
         return survey;
     }
 
-    public void setSurvey(SurveyRestWithoutDetails survey) {
+    public void setSurvey(SurveyRestWithoutAssociations survey) {
         this.survey = survey;
     }
 

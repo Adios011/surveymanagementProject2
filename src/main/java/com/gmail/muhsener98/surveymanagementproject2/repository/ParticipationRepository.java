@@ -20,7 +20,7 @@ public interface ParticipationRepository  extends JpaRepository<Participation , 
 
     Participation findByUserAndSurvey(MyUser user , Survey survey);
 
-    @EntityGraph(attributePaths = {"answers" ,"answers.question" } , type = EntityGraph.EntityGraphType.LOAD)
+    @EntityGraph(attributePaths = {"answers" , "answers.question"  } , type = EntityGraph.EntityGraphType.LOAD)
     Participation findWithAnswersByUserAndSurvey(MyUser user , Survey survey);
 
 

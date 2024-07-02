@@ -1,10 +1,14 @@
 package com.gmail.muhsener98.surveymanagementproject2.entity.survey;
 
+import com.gmail.muhsener98.surveymanagementproject2.analysis.QuestionAnalysis;
+import com.gmail.muhsener98.surveymanagementproject2.analysis.SurveyAnalysis;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.Answer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.participation.Participation;
 import com.gmail.muhsener98.surveymanagementproject2.entity.question.Question;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
+import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey.SurveyRestWithoutAssociations;
 import jakarta.persistence.*;
+import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -134,5 +138,28 @@ public class Survey {
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
         questions.forEach(question -> question.setSurvey(this));
+    }
+
+    public SurveyAnalysis analyze() {
+        SurveyAnalysis surveyAnalysis = new SurveyAnalysis();
+
+        surveyAnalysis.setSurvey(getDetailsWithoutAssociations());
+        surveyAnalysis.setQuestions(analyzeQuestions());
+        return surveyAnalysis;
+
+    }
+
+    private List<QuestionAnalysis> analyzeQuestions(){
+        List<QuestionAnalysis> questionAnalyses = new ArrayList<>();
+        for (Question question : questions) {
+            questionAnalyses.add(question.analyze());
+        }
+        return questionAnalyses;
+    }
+
+    public SurveyRestWithoutAssociations getDetailsWithoutAssociations(){
+        SurveyRestWithoutAssociations surveyRestWithoutAssociations = new SurveyRestWithoutAssociations();
+        BeanUtils.copyProperties(this , surveyRestWithoutAssociations);
+        return surveyRestWithoutAssociations;
     }
 }

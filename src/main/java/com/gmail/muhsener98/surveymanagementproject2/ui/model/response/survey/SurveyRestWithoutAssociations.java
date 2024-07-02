@@ -3,7 +3,7 @@ package com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey;
 import java.io.Serializable;
 import java.util.*;
 
-public class SurveyRestWithoutDetails implements Serializable {
+public class SurveyRestWithoutAssociations implements Serializable {
 
     private String surveyId ;
     private String title;

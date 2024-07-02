@@ -14,7 +14,7 @@ import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.error.Use
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.operations.OperationNames;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.operations.OperationStatus;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.operations.OperationStatusModel;
-import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey.SurveyRestWithoutDetails;
+import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey.SurveyRestWithoutAssociations;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -72,16 +72,16 @@ public class UserController {
 
 
     @GetMapping("/{userId}/surveys")
-    public ResponseEntity<List<SurveyRestWithoutDetails>> getParticipatedSurveysWithoutDetails(@PathVariable(name = "userId") String userId,
-                                                                                               @RequestParam(name = "page", defaultValue = "0") int page,
-                                                                                               @RequestParam(name = "limit", defaultValue = "10") int limit) {
+    public ResponseEntity<List<SurveyRestWithoutAssociations>> getParticipatedSurveysWithoutDetails(@PathVariable(name = "userId") String userId,
+                                                                                                    @RequestParam(name = "page", defaultValue = "0") int page,
+                                                                                                    @RequestParam(name = "limit", defaultValue = "10") int limit) {
 
         List<Survey> surveys = participationManager.findAllSurveysParticipatedBy(userId, page, limit);
 
-        List<SurveyRestWithoutDetails> responseBody = new ArrayList<>();
+        List<SurveyRestWithoutAssociations> responseBody = new ArrayList<>();
 
         surveys.forEach(survey -> {
-            SurveyRestWithoutDetails surveyRestWithoutDetails = new SurveyRestWithoutDetails();
+            SurveyRestWithoutAssociations surveyRestWithoutDetails = new SurveyRestWithoutAssociations();
             BeanUtils.copyProperties(survey, surveyRestWithoutDetails);
             responseBody.add(surveyRestWithoutDetails);
         });
