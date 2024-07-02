@@ -3,6 +3,7 @@ package com.gmail.muhsener98.surveymanagementproject2.entity.answer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.question.Question;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.operations.OperationStatus;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -12,6 +13,7 @@ import jakarta.persistence.Table;
 @DiscriminatorValue("open_ended")
 public class OpenEndedAnswer extends Answer{
 
+    @Column(name = "text")
     private String text;
 
 

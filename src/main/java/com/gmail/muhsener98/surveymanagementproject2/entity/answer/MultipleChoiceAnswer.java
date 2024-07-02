@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 @DiscriminatorValue("multiple_choice")
 public class MultipleChoiceAnswer extends Answer{
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "options_id")
     private Option option;
 
