@@ -1,5 +1,6 @@
 package com.gmail.muhsener98.surveymanagementproject2.analysis;
 
+import com.gmail.muhsener98.surveymanagementproject2.analysis.questions.QuestionAnalysis;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey.SurveyRestWithoutAssociations;
 
 import java.util.List;

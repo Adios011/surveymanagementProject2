@@ -5,6 +5,7 @@ import com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey;
 import com.gmail.muhsener98.surveymanagementproject2.managers.AnalysisManager;
 import com.gmail.muhsener98.surveymanagementproject2.mapper.SurveyMapper;
 import com.gmail.muhsener98.surveymanagementproject2.service.SurveyService;
+import com.gmail.muhsener98.surveymanagementproject2.shared.constants.SurveyOpenStatus;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.survey.SurveyCreationForm;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey.SurveyRest;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey.SurveyRestWithoutAssociations;
@@ -52,11 +53,21 @@ public class SurveyController {
 
 
     @GetMapping
-    public ResponseEntity<List<SurveyRestWithoutAssociations>> getAllSurveyByOpenStatus(@RequestParam(name = "openStatus", defaultValue = "open") String openStatus,
+    public ResponseEntity<List<SurveyRestWithoutAssociations>> getAllSurveyByOpenStatus(@RequestParam(name = "openStatus", defaultValue = "OPEN") String openStatus,
                                                                                         @RequestParam(name = "page", defaultValue = "0") int page,
                                                                                         @RequestParam(name = "limit", defaultValue = "10") int limit) {
+        SurveyOpenStatus status = SurveyOpenStatus.OPEN;
         openStatus = openStatus.toUpperCase();
-        List<Survey> surveys = surveyService.findAllWithoutAssociationsByOpenStatus(openStatus , page , limit);
+        if(openStatus.equals("OPEN"))
+            status = SurveyOpenStatus.OPEN;
+        else if(openStatus.equals("CLOSED"))
+            status = SurveyOpenStatus.CLOSED;
+        else if(openStatus.equals("ALL"))
+            status = SurveyOpenStatus.ALL;
+        else
+            throw new IllegalArgumentException("invalid openStatus ");
+
+        List<Survey> surveys = surveyService.findAllWithoutAssociationsByOpenStatus(status , page , limit);
 
         List<SurveyRestWithoutAssociations> responseBody = SurveyMapper.INSTANCE.toRestWithoutAssociations(surveys);
         return ResponseEntity.ok(responseBody);

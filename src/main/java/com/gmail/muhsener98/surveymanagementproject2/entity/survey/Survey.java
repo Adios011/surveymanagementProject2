@@ -1,6 +1,6 @@
 package com.gmail.muhsener98.surveymanagementproject2.entity.survey;
 
-import com.gmail.muhsener98.surveymanagementproject2.analysis.QuestionAnalysis;
+import com.gmail.muhsener98.surveymanagementproject2.analysis.questions.QuestionAnalysis;
 import com.gmail.muhsener98.surveymanagementproject2.analysis.SurveyAnalysis;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.Answer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.participation.Participation;
@@ -61,6 +61,7 @@ public class Survey {
 
 
     public Participation participate(Map<Long, AnswerForm> answerFormMap) {
+        System.out.println("GİRİYOR");
         List<Answer> answers = new ArrayList<>();
         for (Question question : questions) {
             Long questionId = question.getId();

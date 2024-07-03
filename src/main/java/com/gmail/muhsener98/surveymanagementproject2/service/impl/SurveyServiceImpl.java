@@ -13,6 +13,7 @@ import com.gmail.muhsener98.surveymanagementproject2.service.SurveyService;
 import com.gmail.muhsener98.surveymanagementproject2.shared.constants.SurveyOpenStatus;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.survey.SurveyCreationForm;
+import org.hibernate.TransientObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +35,7 @@ public class SurveyServiceImpl implements SurveyService {
 
 
     @Override
+    @Transactional
     public Survey createSurvey(SurveyCreationForm surveyCreationForm) {
 
         Survey surveyToBeSaved = prepareSurveyToSave(surveyCreationForm);
@@ -62,8 +64,7 @@ public class SurveyServiceImpl implements SurveyService {
     @Transactional(readOnly = true)
     public Survey findSurveyForAnalysis(String surveyId){
         Survey survey = surveyRepository.findWithAllAssociationsBySurveyId(surveyId);
-        if(survey == null)
-            throw new SurveyNotFoundException(surveyId);
+        validateSurveyExists(survey,surveyId);
 
         //To avoid n+1 query problem.
         questionService.loadAssociationsOfSubQuestionsForAnalysis(surveyId);
@@ -97,7 +98,15 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Participation participateIn(MyUser myUser , Survey survey, Map<Long, AnswerForm> answerFormMap) {
+        if(myUser.getId() == null || survey.getId() == null)
+            throw new TransientObjectException("User or survey is transient.");
+
+        if(answerFormMap == null)
+            throw new IllegalArgumentException("null answerFormMap");
+
+
         Participation participation = survey.participate(answerFormMap);
         participation.setUser(myUser);
         return participation;
@@ -105,16 +114,16 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Survey> findAllWithoutAssociationsByOpenStatus(String openStatus, int page, int limit) {
+    public List<Survey> findAllWithoutAssociationsByOpenStatus(SurveyOpenStatus openStatus, int page, int limit) {
         Pageable pageable = PageRequest.of(page,limit);
 
         //TODO : Re-implement it later in a more polymorphic way.
 
-        if(openStatus.equals(SurveyOpenStatus.OPEN.name()))
+        if(openStatus.equals(SurveyOpenStatus.OPEN))
             return surveyRepository.findAll(SurveySpecs.isOpen() , pageable).getContent();
-        else if(openStatus.equals(SurveyOpenStatus.CLOSED.name()))
+        else if(openStatus.equals(SurveyOpenStatus.CLOSED))
             return surveyRepository.findAll(SurveySpecs.isClosed() , pageable).getContent() ;
-        else if(openStatus.equals(SurveyOpenStatus.ALL.name()))
+        else if(openStatus.equals(SurveyOpenStatus.ALL))
             return surveyRepository.findAll(pageable).getContent();
         else
             throw new IllegalArgumentException("Unknown survey open status " + openStatus);
@@ -123,12 +132,7 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
 
-    @Override
-    @Transactional
-    public SurveyAnalysis analyzeSurvey(String surveyId) {
-        Survey survey = findSurveyForAnalysis(surveyId);
-        return survey.analyze();
-    }
+
 
 
 

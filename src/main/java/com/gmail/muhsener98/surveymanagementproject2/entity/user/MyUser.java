@@ -2,12 +2,14 @@ package com.gmail.muhsener98.surveymanagementproject2.entity.user;
 
 import com.gmail.muhsener98.surveymanagementproject2.entity.authorization.Role;
 import jakarta.persistence.*;
+import lombok.Builder;
 import org.hibernate.annotations.BatchSize;
 
 import java.util.Date;
 import java.util.List;
 
 @Entity
+@Builder(setterPrefix = "set")
 @Table(name = "users")
 public class MyUser {
 
@@ -48,6 +50,16 @@ public class MyUser {
     public MyUser() {
     }
 
+    public MyUser(Long id, String userId, String firstName, String lastName, String encryptedPassword, String email, Date birthDate, List<Role> roles) {
+        this.id = id;
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.encryptedPassword = encryptedPassword;
+        this.email = email;
+        this.birthDate = birthDate;
+        this.roles = roles;
+    }
 
     public String getEmail() {
         return email;

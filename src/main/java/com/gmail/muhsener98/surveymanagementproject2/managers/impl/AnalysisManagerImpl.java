@@ -1,10 +1,9 @@
 package com.gmail.muhsener98.surveymanagementproject2.managers.impl;
 
-import com.gmail.muhsener98.surveymanagementproject2.analysis.QuestionAnalysis;
+import com.gmail.muhsener98.surveymanagementproject2.analysis.questions.QuestionAnalysis;
 import com.gmail.muhsener98.surveymanagementproject2.analysis.SurveyAnalysis;
 import com.gmail.muhsener98.surveymanagementproject2.entity.question.Question;
 import com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey;
-import com.gmail.muhsener98.surveymanagementproject2.exceptions.QuestionNotFoundException;
 import com.gmail.muhsener98.surveymanagementproject2.managers.AnalysisManager;
 import com.gmail.muhsener98.surveymanagementproject2.service.QuestionService;
 import com.gmail.muhsener98.surveymanagementproject2.service.SurveyService;

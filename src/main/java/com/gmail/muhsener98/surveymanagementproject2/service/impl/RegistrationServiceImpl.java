@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service("registrationService")
 public class RegistrationServiceImpl implements RegistrationService {
@@ -24,9 +25,9 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-    public UserDto registerUser(RegistrationForm registrationForm){
-        validateUserRegistration(registrationForm.getEmail());
+    @Transactional
+    public UserDto registerUser (RegistrationForm registrationForm) throws UserAlreadyExistsException{
+        validateUserDoesNotExist(registrationForm.getEmail());
 
        MyUser userToBeSaved =  prepareUserForRegistration(registrationForm);
 
@@ -50,7 +51,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
 
-    private void validateUserRegistration(String email){
+    private void validateUserDoesNotExist(String email){
         if(email == null)
             throw new IllegalArgumentException("null email");
 

@@ -1,6 +1,6 @@
 package com.gmail.muhsener98.surveymanagementproject2.ui.controller;
 
-import com.gmail.muhsener98.surveymanagementproject2.analysis.QuestionAnalysis;
+import com.gmail.muhsener98.surveymanagementproject2.analysis.questions.QuestionAnalysis;
 import com.gmail.muhsener98.surveymanagementproject2.managers.AnalysisManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

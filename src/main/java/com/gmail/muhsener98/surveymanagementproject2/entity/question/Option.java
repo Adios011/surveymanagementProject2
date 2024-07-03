@@ -1,10 +1,16 @@
 package com.gmail.muhsener98.surveymanagementproject2.entity.question;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = "options")
+@Builder
+
+@AllArgsConstructor
 public class Option {
 
     @Id
@@ -21,6 +27,14 @@ public class Option {
     @JoinColumn(name = "questions_id")
     private MultipleChoiceQuestion question;
 
+
+    public Option(){
+
+    }
+
+    public Option(String optionText){
+        this.optionText = optionText;
+    }
 
 
     public void increaseCounter(){

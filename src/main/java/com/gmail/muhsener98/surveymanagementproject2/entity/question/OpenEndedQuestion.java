@@ -1,7 +1,6 @@
 package com.gmail.muhsener98.surveymanagementproject2.entity.question;
 
-import com.gmail.muhsener98.surveymanagementproject2.analysis.OpenEndedQuestionAnalysis;
-import com.gmail.muhsener98.surveymanagementproject2.analysis.QuestionAnalysis;
+import com.gmail.muhsener98.surveymanagementproject2.analysis.questions.OpenEndedQuestionAnalysis;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.Answer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.OpenEndedAnswer;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;

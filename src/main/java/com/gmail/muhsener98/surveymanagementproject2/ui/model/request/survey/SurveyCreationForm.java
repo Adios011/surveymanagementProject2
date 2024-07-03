@@ -1,11 +1,15 @@
 package com.gmail.muhsener98.surveymanagementproject2.ui.model.request.survey;
 
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.question.QuestionCreationForm;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SurveyCreationForm implements Serializable {
 
     private String title;

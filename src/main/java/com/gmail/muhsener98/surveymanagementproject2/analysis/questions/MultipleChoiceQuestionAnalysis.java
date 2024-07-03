@@ -1,4 +1,4 @@
-package com.gmail.muhsener98.surveymanagementproject2.analysis;
+package com.gmail.muhsener98.surveymanagementproject2.analysis.questions;
 
 import java.util.Map;
 
