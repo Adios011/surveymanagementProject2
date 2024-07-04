@@ -26,6 +26,10 @@ public abstract class Answer {
         this.question = question;
     }
 
+    public Answer (){
+
+    }
+
     public Long getId() {
         return id;
     }
@@ -42,9 +46,7 @@ public abstract class Answer {
     public abstract void update(AnswerForm answerForm);
     public abstract String getAnswerText();
 
-    public Answer (){
 
-    }
 
     public void setQuestion(Question question) {
         this.question = question;

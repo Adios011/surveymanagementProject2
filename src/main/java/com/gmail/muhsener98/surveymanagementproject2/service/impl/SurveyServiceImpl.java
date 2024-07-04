@@ -34,6 +34,11 @@ public class SurveyServiceImpl implements SurveyService {
     private QuestionService questionService;
 
 
+    /**
+     * It creates survey.
+     * @param surveyCreationForm - details of survey to be created.
+     * @return - survey created.
+     */
     @Override
     @Transactional
     public Survey createSurvey(SurveyCreationForm surveyCreationForm) {
@@ -44,12 +49,25 @@ public class SurveyServiceImpl implements SurveyService {
 
     }
 
+    private Survey prepareSurveyToSave(SurveyCreationForm surveyCreationForm){
+        Survey survey = SurveyMapper.INSTANCE.toEntity(surveyCreationForm);
+        survey.setSurveyId("a");
+        return survey;
+    }
+
+
+    /**
+     * It fetches survey with all associations.
+     * To avoid n+1 query problem when accessing questions and associations
+     * of their subtypes, this method also loads question hierarchy necessary for participating in survey.
+     * @param surveyId  It is not database ID.
+     * @return  survey with data necessary for participating in it.
+     * @throws SurveyNotFoundException  if survey not found in database.
+     */
     @Override
     @Transactional(readOnly = true)
-    public Survey findSurveyForParticipation(String surveyId) {
-        Survey survey = surveyRepository.findWithAllAssociationsBySurveyId(surveyId);
-        if(survey == null)
-            throw new SurveyNotFoundException(surveyId);
+    public Survey findSurveyForParticipation(String surveyId) throws SurveyNotFoundException {
+        Survey survey = findSurveyWithAllAssociations(surveyId);
 
         //To avoid n+1 query problem.
         questionService.loadAssociationsOfSubQuestionsForParticipation(surveyId);
@@ -60,11 +78,18 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
 
+    /**
+     * It fetches survey with all associations.
+     * To avoid n+1 query problem when accessing questions and associations of their
+     * subtypes, this method also loads question hierarchy necessary for survey analysis.
+     * @param surveyId - It is not database ID.
+     * @return - survey with data necessary to analyze it.
+     * @throws SurveyNotFoundException - if survey not found in database.
+     */
     @Override
     @Transactional(readOnly = true)
-    public Survey findSurveyForAnalysis(String surveyId){
-        Survey survey = surveyRepository.findWithAllAssociationsBySurveyId(surveyId);
-        validateSurveyExists(survey,surveyId);
+    public Survey findSurveyForAnalysis(String surveyId) throws SurveyNotFoundException{
+        Survey survey = findSurveyWithAllAssociations(surveyId);
 
         //To avoid n+1 query problem.
         questionService.loadAssociationsOfSubQuestionsForAnalysis(surveyId);
@@ -73,19 +98,32 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
 
-
-
+    /**
+     * It fetches survey without its associations such as questions.
+     * @param surveyId - It is not Database ID.
+     * @return - survey without associations.
+     * @throws SurveyNotFoundException - if survey not found in database.
+     */
     @Transactional(readOnly = true)
-    public Survey findSurveyWithoutAssociations(String surveyId){
+    public Survey findSurveyWithoutAssociations(String surveyId) throws SurveyNotFoundException{
         Survey survey = surveyRepository.findWithoutAssociationsBySurveyId(surveyId);
         validateSurveyExists(survey, surveyId);
 
         return survey;
     }
 
+
+    /**
+     * It fetches survey with all associations.
+     * However, be careful to call associations of question subtypes.
+     * It may results in n+1 query problem.
+     * @param surveyId
+     * @return - survey with associations
+     * @throws SurveyNotFoundException if survey not found in database.
+     */
     @Override
     @Transactional(readOnly = true)
-    public Survey findSurveyWithAllAssociations(String surveyId) {
+    public Survey findSurveyWithAllAssociations(String surveyId) throws SurveyNotFoundException {
         Survey survey = surveyRepository.findWithAllAssociationsBySurveyId(surveyId);
         validateSurveyExists(survey,surveyId);
 
@@ -96,6 +134,8 @@ public class SurveyServiceImpl implements SurveyService {
         if(survey == null)
             throw new SurveyNotFoundException(surveyId);
     }
+
+
 
     @Override
     @Transactional(readOnly = true)
@@ -112,6 +152,13 @@ public class SurveyServiceImpl implements SurveyService {
         return participation;
     }
 
+    /**
+     * It fetches list of survey without associations based on openStatus.
+     * @param openStatus - OPEN , CLOSE or ALL
+     * @param page -
+     * @param limit -
+     * @return - List of survey without associations.
+     */
     @Override
     @Transactional(readOnly = true)
     public List<Survey> findAllWithoutAssociationsByOpenStatus(SurveyOpenStatus openStatus, int page, int limit) {
@@ -137,11 +184,7 @@ public class SurveyServiceImpl implements SurveyService {
 
 
 
-    private Survey prepareSurveyToSave(SurveyCreationForm surveyCreationForm){
-        Survey survey = SurveyMapper.INSTANCE.toEntity(surveyCreationForm);
-        survey.setSurveyId("a");
-        return survey;
-    }
+
 
 
 

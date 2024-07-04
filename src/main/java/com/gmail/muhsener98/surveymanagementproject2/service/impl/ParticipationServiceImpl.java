@@ -3,6 +3,7 @@ package com.gmail.muhsener98.surveymanagementproject2.service.impl;
 import com.gmail.muhsener98.surveymanagementproject2.entity.participation.Participation;
 import com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey;
 import com.gmail.muhsener98.surveymanagementproject2.entity.user.MyUser;
+import com.gmail.muhsener98.surveymanagementproject2.exceptions.ParticipationNotFoundException;
 import com.gmail.muhsener98.surveymanagementproject2.repository.ParticipationRepository;
 import com.gmail.muhsener98.surveymanagementproject2.service.ParticipationService;
 import com.gmail.muhsener98.surveymanagementproject2.service.QuestionService;
@@ -66,15 +67,31 @@ public class ParticipationServiceImpl implements ParticipationService {
         return participationRepository.findAllSurveysByUser(user);
     }
 
+
+    /**
+     * It fetches Participation with answers associations.
+     * This method also loads question hierarchy to avoid n+1 query problem.
+     * @param user participant of survey
+     * @param survey survey that has been participated in
+     * @return participation with answers fetched eagerly.
+     */
+
+    @Transactional(readOnly = true)
+    public Participation findParticipationWithAnswersAndQuestions(MyUser user , Survey survey){
+        Participation participation = findParticipationWithAnswers(user,survey);
+
+        //To avoid n+1 query when accessing options of questions.
+        questionService.loadAssociationsOfSubQuestionsForParticipation(survey.getSurveyId());
+        return participation;
+    }
+
+
     @Override
     @Transactional
     public Participation findParticipationWithAnswers(MyUser user, Survey survey) {
-//        System.out.println("****loadAssocationsOFQuestions******");
-//        questionService.loadAssociationsOfSubQuestionsForParticipation(survey.getSurveyId());
-//        System.out.println("****loadAssocationsOFQuestions******");
-        System.out.println("****findWithAnswersByUserAndSurvey******");
         Participation participation = participationRepository.findWithAnswersByUserAndSurvey(user,survey);
-        System.out.println("****findWithAnswersByUserAndSurvey******");
+        if(participation == null)
+            throw new ParticipationNotFoundException("participation not found.");
 
 
         return participation;

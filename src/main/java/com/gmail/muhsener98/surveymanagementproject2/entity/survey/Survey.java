@@ -61,7 +61,7 @@ public class Survey {
 
 
     public Participation participate(Map<Long, AnswerForm> answerFormMap) {
-        System.out.println("GİRİYOR");
+
         List<Answer> answers = new ArrayList<>();
         for (Question question : questions) {
             Long questionId = question.getId();
@@ -79,8 +79,7 @@ public class Survey {
 
 
     public boolean isOpen() {
-        System.out.println(closeDate);
-        return closeDate.after(new Date());
+        return getCloseDate().after(new Date());
     }
 
 
@@ -150,7 +149,7 @@ public class Survey {
 
     }
 
-    private List<QuestionAnalysis> analyzeQuestions(){
+    public List<QuestionAnalysis> analyzeQuestions(){
         List<QuestionAnalysis> questionAnalyses = new ArrayList<>();
         for (Question question : questions) {
             questionAnalyses.add(question.analyze());

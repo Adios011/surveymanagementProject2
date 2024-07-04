@@ -7,6 +7,15 @@ public class AnswerForm implements Serializable {
     private Long questionId;
     private Long chosenOptionId;
     private String openEndedAnswerText ;
+    private Integer rate;
+
+    public Integer getRate() {
+        return rate;
+    }
+
+    public void setRate(Integer rate) {
+        this.rate = rate;
+    }
 
     public Long getQuestionId() {
         return questionId;

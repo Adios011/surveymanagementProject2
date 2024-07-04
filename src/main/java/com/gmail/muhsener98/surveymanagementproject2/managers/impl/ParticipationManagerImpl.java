@@ -46,7 +46,35 @@ public class ParticipationManagerImpl implements ParticipationManager {
 
     }
 
+    @Transactional
+    private void handleNewParticipation(MyUser user, String surveyId, Map<Long, AnswerForm> answerFormMap) {
+        Survey survey = surveyService.findSurveyForParticipation(surveyId);
+        Participation participation = surveyService.participateIn(user, survey, answerFormMap);
+
+        participationService.add(participation);
+    }
+
+    @Transactional
+    private void handleExistingParticipation(MyUser user, Survey survey, Map<Long, AnswerForm> answerFormMap) {
+
+        Participation participation = participationService.findParticipationWithAnswersAndQuestions(user,survey);
+        participationService.editParticipation(participation, answerFormMap);
+
+        participationService.add(participation);
+    }
+
+
+    @Transactional(readOnly = true)
+    private Participation findParticipationWithAnswersAndQuestions(MyUser user , Survey survey){
+        //To avoid n+1 query when accessing options of questions.
+        questionService.loadAssociationsOfSubQuestionsForParticipation(survey.getSurveyId());
+        return participationService.findParticipationWithAnswers(user,survey);
+    }
+
+
+
     @Override
+    @Transactional
     public List<Survey> findAllSurveysParticipatedBy(String userId, int page, int limit) {
         MyUser user = userService.findUserWithoutDetails(userId);
 
@@ -54,6 +82,7 @@ public class ParticipationManagerImpl implements ParticipationManager {
     }
 
     @Override
+    @Transactional
     public List<Survey> findAllSurveysParticipatedBy(String userId) {
         MyUser user = userService.findUserWithoutDetails(userId);
 
@@ -68,39 +97,12 @@ public class ParticipationManagerImpl implements ParticipationManager {
 
         validateHasParticipatedBefore(user,survey);
 
-//        System.out.println("******findSurveyForParticipation*****");
-//        surveyService.findSurveyForParticipation(surveyId);
-//        System.out.println("******findSurveyForParticipation*****");
-
-        Participation participation = findParticipationForUserAnswers(user,survey);
-
-//        SurveySpecificParticipationRest detailsToBeReturned = new SurveySpecificParticipationRest();
-//        SurveyRestWithoutDetails surveyRestWithoutDetails = new SurveyRestWithoutDetails();
-//        BeanUtils.copyProperties(survey , surveyRestWithoutDetails);
-//        detailsToBeReturned.setSurvey(surveyRestWithoutDetails);
-//
-//        List<Answer> answers = participation.getAnswers();
-//        List<QuestionRest> questionRests = new ArrayList<>();
-//        Map<Long,String> questionIdAnswerTextMap = new HashMap<>();
-//        for (Answer answer : answers) {
-//            Question question = answer.getQuestion();
-//            questionRests.add(QuestionMapper.INSTANCE.toRest(question));
-//            questionIdAnswerTextMap.put(question.getId() , answer.getAnswerText());
-//        }
-//
-//        detailsToBeReturned.setQuestions(questionRests);
-//        detailsToBeReturned.setQuestionIdAnswerTextMap(questionIdAnswerTextMap);
-
-        return participation;
+        return participationService.findParticipationWithAnswersAndQuestions(user,survey);
 
     }
 
 
-    private Participation findParticipationForUserAnswers(MyUser user , Survey survey){
-        //To avoid n+1 query when accessing options of questions.
-        questionService.loadAssociationsOfSubQuestionsForParticipation(survey.getSurveyId());
-        return participationService.findParticipationWithAnswers(user,survey);
-    }
+
 
     @Override
     @Transactional
@@ -110,13 +112,9 @@ public class ParticipationManagerImpl implements ParticipationManager {
         validateParticipationCanBeWithdrawn(survey);
         validateHasParticipatedBefore(user, survey);
 
-        System.out.println("*******************************************");
-        System.out.println("*******************************************");
-        System.out.println("*******************************************");
+
         Participation participation =findParticipationToWithdraw(user,survey);
-        System.out.println("*******************************************");
-        System.out.println("*******************************************");
-        System.out.println("*******************************************");
+
 
         participationService.delete( participation);
     }
@@ -138,31 +136,11 @@ public class ParticipationManagerImpl implements ParticipationManager {
     }
 
 
-    @Transactional
-    private void handleNewParticipation(MyUser user, String surveyId, Map<Long, AnswerForm> answerFormMap) {
-        Survey survey = surveyService.findSurveyForParticipation(surveyId);
-        Participation participation = surveyService.participateIn(user, survey, answerFormMap);
-
-        participationService.add(participation);
 
 
-    }
 
 
-    @Transactional
-    private void handleExistingParticipation(MyUser user, Survey survey, Map<Long, AnswerForm> answerFormMap) {
-        System.out.println("*****findByUserAndSurvey()********");
-        Participation participation = participationService.findByUserAndSurvey(user, survey);
-        System.out.println("*****findByUserAndSurvey()********");
 
-
-        System.out.println("*****editParticipation******");
-        participationService.editParticipation(participation, answerFormMap);
-        System.out.println("*****editParticipation******");
-
-
-        participationService.add(participation);
-    }
 
 
     @Transactional
