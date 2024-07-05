@@ -1,13 +1,7 @@
 package com.gmail.muhsener98.surveymanagementproject2.mapper;
 
-import com.gmail.muhsener98.surveymanagementproject2.entity.question.MultipleChoiceQuestion;
-import com.gmail.muhsener98.surveymanagementproject2.entity.question.OpenEndedQuestion;
-import com.gmail.muhsener98.surveymanagementproject2.entity.question.Question;
-import com.gmail.muhsener98.surveymanagementproject2.entity.question.RatingScaleQuestion;
-import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.question.MultipleChoiceQuestionCreationForm;
-import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.question.OpenEndedQuestionCreationForm;
-import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.question.QuestionCreationForm;
-import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.question.RatingScaleQuestionCreationForm;
+import com.gmail.muhsener98.surveymanagementproject2.entity.question.*;
+import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.question.*;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.question.MultipleChoiceQuestionRest;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.question.OpenEndedQuestionRest;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.question.QuestionRest;
@@ -28,6 +22,8 @@ public interface QuestionMapper {
             return toEntity(openEndedQuestionCreationForm);
         else if(questionCreationForm instanceof RatingScaleQuestionCreationForm ratingScaleQuestionCreationForm)
             return toEntity(ratingScaleQuestionCreationForm);
+        else if (questionCreationForm instanceof MatrixQuestionCreationForm matrixQuestionCreationForm)
+            return toEntity(matrixQuestionCreationForm);
         else
             throw new IllegalArgumentException("Unknown subclass type: " + questionCreationForm.getClass().getName());
     }
@@ -36,6 +32,7 @@ public interface QuestionMapper {
     MultipleChoiceQuestion toEntity(MultipleChoiceQuestionCreationForm multipleChoiceQuestionCreationForm);
     OpenEndedQuestion toEntity(OpenEndedQuestionCreationForm openEndedQuestionCreationForm);
     RatingScaleQuestion toEntity(RatingScaleQuestionCreationForm ratingScaleQuestionCreationForm);
+    MatrixQuestion toEntity(MatrixQuestionCreationForm matrixQuestionCreationForm);
 
 
     MultipleChoiceQuestionRest toRest(MultipleChoiceQuestion multipleChoiceQuestion);

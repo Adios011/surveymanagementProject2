@@ -1,5 +1,6 @@
 package com.gmail.muhsener98.surveymanagementproject2.entity.answer;
 
+import com.gmail.muhsener98.surveymanagementproject2.entity.question.MatrixQuestion;
 import com.gmail.muhsener98.surveymanagementproject2.entity.question.MultipleChoiceQuestion;
 import com.gmail.muhsener98.surveymanagementproject2.entity.question.Option;
 import com.gmail.muhsener98.surveymanagementproject2.entity.question.Question;
@@ -21,6 +22,14 @@ public class MultipleChoiceAnswer extends Answer{
     @JoinColumn(name = "options_id")
     private Option option;
 
+
+    @ManyToOne
+    @JoinColumn(name = "matrix_answers_id")
+    public MatrixAnswer matrixAnswer;
+
+
+
+
     public MultipleChoiceAnswer(){
 
     }
@@ -36,6 +45,14 @@ public class MultipleChoiceAnswer extends Answer{
 
     public void setOption(Option option) {
         this.option = option;
+    }
+
+    public MatrixAnswer getMatrixAnswer() {
+        return matrixAnswer;
+    }
+
+    public void setMatrixAnswer(MatrixAnswer matrixAnswer) {
+        this.matrixAnswer = matrixAnswer;
     }
 
     @Override

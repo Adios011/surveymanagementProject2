@@ -10,16 +10,16 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface QuestionRepository extends JpaRepository<Question,Long> {
+public interface QuestionRepository<T extends Question> extends JpaRepository<T,Long> {
 
 
 
 
-    @Query(name =  "load_multiple_choice_question_with_all_associations_by_survey_id" )
-    List<MultipleChoiceQuestion> findAllMultipleChoiceQuestionsBySurveyId(@Param("surveyId") String surveyId);
-
-    @Query(name = "load_open_ended_questions_with_all_associations_by_survey_id")
-    List<OpenEndedQuestion> findAllOpenEndedQuestionsBySurveyId(@Param("surveyId") String surveyId);
+//    @Query(name =  "load_multiple_choice_question_with_all_associations_by_survey_id" )
+//    List<MultipleChoiceQuestion> findAllMultipleChoiceQuestionsBySurveyId(@Param("surveyId") String surveyId);
+//
+//    @Query(name = "load_open_ended_questions_with_all_associations_by_survey_id")
+//    List<OpenEndedQuestion> findAllOpenEndedQuestionsBySurveyId(@Param("surveyId") String surveyId);
 
 
 

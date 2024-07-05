@@ -1,6 +1,7 @@
 package com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class AnswerForm implements Serializable {
 
@@ -8,6 +9,15 @@ public class AnswerForm implements Serializable {
     private Long chosenOptionId;
     private String openEndedAnswerText ;
     private Integer rate;
+    private Map<Long,Long> matrixQuestionAnswerMap;
+
+    public Map<Long, Long> getMatrixQuestionAnswerMap() {
+        return matrixQuestionAnswerMap;
+    }
+
+    public void setMatrixQuestionAnswerMap(Map<Long, Long> matrixQuestionAnswerMap) {
+        this.matrixQuestionAnswerMap = matrixQuestionAnswerMap;
+    }
 
     public Integer getRate() {
         return rate;

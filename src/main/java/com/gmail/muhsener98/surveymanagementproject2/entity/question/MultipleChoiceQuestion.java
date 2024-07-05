@@ -13,17 +13,17 @@ import java.util.Map;
 
 @Entity
 @Table(name = "multiple_choice_questions")
-@NamedQuery(name = "load_multiple_choice_question_with_all_associations_by_survey_id" ,
-query = "SELECT mcq FROM MultipleChoiceQuestion mcq " +
-        "LEFT JOIN mcq.survey s " +
-        "JOIN FETCH mcq.options o " +
-        "WHERE s.surveyId = :surveyId")
 public class MultipleChoiceQuestion extends Question {
 
 
     @OneToMany(mappedBy = "question", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
-    @BatchSize(size = 25)
     private List<Option> options;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "matrix_questions_id")
+    private MatrixQuestion matrixQuestion;
+
+
 
     public List<Option> getOptions() {
         return options;
@@ -36,7 +36,7 @@ public class MultipleChoiceQuestion extends Question {
 
 
     @Override
-    public Answer answer(AnswerForm answerForm) {
+    public MultipleChoiceAnswer answer(AnswerForm answerForm) {
         Long chosenOptionId = answerForm.getChosenOptionId();
         Option option = findOptionById(chosenOptionId);
         if(option == null )
@@ -47,7 +47,16 @@ public class MultipleChoiceQuestion extends Question {
         MultipleChoiceAnswer answer = new  MultipleChoiceAnswer(this , option);
 
         return answer;
+    }
 
+    public MultipleChoiceAnswer answer(Long optionId){
+        Option option = findOptionById(optionId);
+        if(option == null)
+            throw new IllegalArgumentException("Question " + this.id + " has no such option " + optionId );
+
+        option.increaseCounter();;
+        MultipleChoiceAnswer answer = new MultipleChoiceAnswer(this , option);
+        return answer;
     }
 
     @Override
@@ -64,6 +73,7 @@ public class MultipleChoiceQuestion extends Question {
         analysis.setOptionTextPercentageMap(optionTextPercentageMap);
         return analysis;
     }
+
 
     private double calculateOptionPercentage(int x  , double total){
         return (x / total) * 100 ;
@@ -90,7 +100,18 @@ public class MultipleChoiceQuestion extends Question {
         return null;
 
 
+    }
 
+
+
+
+    public MatrixQuestion getMatrixQuestion() {
+        return matrixQuestion;
+    }
+
+    public void setMatrixQuestion(MatrixQuestion matrixQuestion) {
+        this.matrixQuestion = matrixQuestion;
 
     }
+
 }

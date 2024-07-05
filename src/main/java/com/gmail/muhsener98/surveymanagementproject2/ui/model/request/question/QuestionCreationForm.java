@@ -10,7 +10,8 @@ import java.io.Serializable;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = MultipleChoiceQuestionCreationForm.class, name = "multiple-choice-question"),
         @JsonSubTypes.Type(value = OpenEndedQuestionCreationForm.class, name = "open-ended-question"),
-        @JsonSubTypes.Type(value = RatingScaleQuestionCreationForm.class, name = "rating-scale-question")}
+        @JsonSubTypes.Type(value = RatingScaleQuestionCreationForm.class, name = "rating-scale-question"),
+        @JsonSubTypes.Type(value = MatrixQuestionCreationForm.class , name = "matrix-question")}
 )
 public abstract class QuestionCreationForm implements Serializable {
 
