@@ -1,16 +1,16 @@
 package com.gmail.muhsener98.surveymanagementproject2.entity.question;
 
 import com.gmail.muhsener98.surveymanagementproject2.analysis.questions.RatingScaleQuestionAnalysis;
+import com.gmail.muhsener98.surveymanagementproject2.entity.answer.InnerQuestionAnswer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.RatingScaleAnswer;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.BeanUtils;
 
 @Entity
 @Table(name = "rating_scale_questions")
-public class RatingScaleQuestion extends Question {
+public class RatingScaleQuestion extends InnerQuestion {
 
 
     @Column(name = "min_rate",nullable = false )
@@ -26,12 +26,26 @@ public class RatingScaleQuestion extends Question {
     private int participantCounter ;
 
 
+
+
     @Override
     public RatingScaleAnswer answer(AnswerForm answerForm) {
-        int rate = checkAndFixInputRate(answerForm.getRate());
+        if(answerForm == null)
+            throw new IllegalArgumentException("null answerForm for question " + id);
+
+        return answer(answerForm.getRate());
+    }
+
+    @Override
+    protected RatingScaleAnswer answer( Number answer) {
+        int rate = 0 ;
+        if(answer != null)
+          rate = checkAndFixInputRate(answer.intValue());
+
+
         calculateAveragePointAfterAnsweringQuestion(rate);
 
-        return new RatingScaleAnswer(this, rate );
+        return new RatingScaleAnswer(this, rate);
     }
 
     private void calculateAveragePointAfterAnsweringQuestion(int rate ){
@@ -86,10 +100,9 @@ public class RatingScaleQuestion extends Question {
     }
 
 
-    public int checkAndFixInputRate(int rate){
-
-        System.out.println("min-rate --> " + minRate);
-        System.out.println("max--rate --> " + maxRate);
+    public int checkAndFixInputRate(Integer rate){
+        if(rate == null)
+            throw new IllegalArgumentException("rate is null for question " + id );
 
         if(rate < minRate)
             return minRate;
@@ -137,4 +150,5 @@ public class RatingScaleQuestion extends Question {
     public void setParticipantCounter(Integer participantCounter) {
         this.participantCounter = participantCounter;
     }
+
 }

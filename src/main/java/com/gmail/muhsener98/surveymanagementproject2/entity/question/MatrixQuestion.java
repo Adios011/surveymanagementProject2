@@ -4,6 +4,7 @@ import com.gmail.muhsener98.surveymanagementproject2.analysis.questions.MatrixQu
 import com.gmail.muhsener98.surveymanagementproject2.analysis.questions.MultipleChoiceQuestionAnalysis;
 import com.gmail.muhsener98.surveymanagementproject2.analysis.questions.QuestionAnalysis;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.Answer;
+import com.gmail.muhsener98.surveymanagementproject2.entity.answer.InnerQuestionAnswer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.MatrixAnswer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.MultipleChoiceAnswer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey;
@@ -19,24 +20,35 @@ import java.util.Map;
 public class MatrixQuestion extends Question{
 
     @OneToMany(mappedBy = "matrixQuestion" , cascade = {CascadeType.MERGE , CascadeType.PERSIST , CascadeType.REMOVE} )
-    private List<MultipleChoiceQuestion> multipleChoiceQuestions ;
+    private List<InnerQuestion> innerQuestions ;
 
-    public List<MultipleChoiceQuestion> getMultipleChoiceQuestions() {
-        return multipleChoiceQuestions;
+//    public List<MultipleChoiceQuestion> getMultipleChoiceQuestions() {
+//        return multipleChoiceQuestions;
+//    }
+//
+//    public void setMultipleChoiceQuestions(List<MultipleChoiceQuestion> multipleChoiceQuestions) {
+//        this.innerQuestions = multipleChoiceQuestions;
+//        for (MultipleChoiceQuestion multipleChoiceQuestion : multipleChoiceQuestions) {
+//            multipleChoiceQuestion.setMatrixQuestion(this);
+//
+//        }
+//    }
+
+    public List<InnerQuestion> getInnerQuestions() {
+        return innerQuestions;
     }
 
-    public void setMultipleChoiceQuestions(List<MultipleChoiceQuestion> multipleChoiceQuestions) {
-        this.multipleChoiceQuestions = multipleChoiceQuestions;
-        for (MultipleChoiceQuestion multipleChoiceQuestion : multipleChoiceQuestions) {
-            multipleChoiceQuestion.setMatrixQuestion(this);
-
+    public void setInnerQuestions(List<InnerQuestion> innerQuestions) {
+        this.innerQuestions = innerQuestions;
+        for (InnerQuestion innerQuestion : innerQuestions) {
+            innerQuestion.setMatrixQuestion(this);
         }
     }
 
     @Override
     public void setSurvey(Survey survey){
         this.survey = survey;
-        multipleChoiceQuestions.forEach(multipleChoiceQuestion -> multipleChoiceQuestion.setSurvey(survey));
+        innerQuestions.forEach(innerQuestion -> innerQuestion.setSurvey(survey));
     }
 
 
@@ -47,26 +59,30 @@ public class MatrixQuestion extends Question{
         matrixAnswer.setQuestion(this);
 
         Map<Long , Long> answerMap = answerForm.getMatrixQuestionAnswerMap();
-        matrixAnswer.setMultipleChoiceAnswers(answerMultipleChoiceQuestions(answerMap));
+        if(answerForm == null)
+            throw new IllegalArgumentException("null matrix-question answer map for question " + id );
+
+
+        matrixAnswer.setInnerQuestionAnswers(answerInnerQuestions(answerMap));
 
         return matrixAnswer;
 
 
     }
 
-    private List<MultipleChoiceAnswer> answerMultipleChoiceQuestions( Map<Long, Long> answerMap) {
-        List<MultipleChoiceAnswer> multipleChoiceAnswers = new ArrayList<>();
-        for (MultipleChoiceQuestion multipleChoiceQuestion : multipleChoiceQuestions) {
-            if(!answerMap.containsKey(multipleChoiceQuestion.getId()))
+    private List<InnerQuestionAnswer> answerInnerQuestions( Map<Long, Long> answerMap) {
+        List<InnerQuestionAnswer> innerQuestionAnswers = new ArrayList<>();
+        for (InnerQuestion innerQuestion : innerQuestions) {
+            if(!answerMap.containsKey(innerQuestion.getId()))
                 continue;
 
-            MultipleChoiceAnswer multipleChoiceAnswer = multipleChoiceQuestion.answer(answerMap.get(multipleChoiceQuestion.getId()));
+            InnerQuestionAnswer innerQuestionAnswer = innerQuestion.answer(answerMap.get(innerQuestion.getId()));
 
-            multipleChoiceAnswers.add(multipleChoiceAnswer);
+            innerQuestionAnswers.add(innerQuestionAnswer);
         }
 
 
-        return multipleChoiceAnswers;
+        return innerQuestionAnswers;
     }
 
     @Override
@@ -79,8 +95,8 @@ public class MatrixQuestion extends Question{
 
     private List<Long> getInnerQuestionIds(){
         List<Long> ids = new ArrayList<>();
-        for (MultipleChoiceQuestion multipleChoiceQuestion : multipleChoiceQuestions) {
-            ids.add(multipleChoiceQuestion.getId());
+        for (InnerQuestion innerQuestion : innerQuestions) {
+            ids.add(innerQuestion.getId());
         }
         return ids;
     }

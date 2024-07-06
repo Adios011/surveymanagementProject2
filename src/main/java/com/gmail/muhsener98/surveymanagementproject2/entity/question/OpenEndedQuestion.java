@@ -31,8 +31,12 @@ public class OpenEndedQuestion extends Question {
 
     @Override
     public Answer answer(AnswerForm answerForm) {
-        assert answerForm.getOpenEndedAnswerText() != null ;
 
+        String answerText = answerForm.getOpenEndedAnswerText();
+        if(answerText == null)
+            throw new IllegalArgumentException("null open-ended-answer text for question " + id );
+
+        answerText = answerText.trim();
         return new OpenEndedAnswer(this, answerForm.getOpenEndedAnswerText());
 
 

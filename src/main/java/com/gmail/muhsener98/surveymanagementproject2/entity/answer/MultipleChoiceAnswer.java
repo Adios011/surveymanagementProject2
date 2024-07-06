@@ -16,16 +16,13 @@ query = "SELECT mca " +
         "JOIN  mca.participation p " +
         "JOIN FETCH mca.option o " +
         "WHERE p = :participation")
-public class MultipleChoiceAnswer extends Answer{
+public class MultipleChoiceAnswer extends InnerQuestionAnswer{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "options_id")
     private Option option;
 
 
-    @ManyToOne
-    @JoinColumn(name = "matrix_answers_id")
-    public MatrixAnswer matrixAnswer;
 
 
 
@@ -47,13 +44,6 @@ public class MultipleChoiceAnswer extends Answer{
         this.option = option;
     }
 
-    public MatrixAnswer getMatrixAnswer() {
-        return matrixAnswer;
-    }
-
-    public void setMatrixAnswer(MatrixAnswer matrixAnswer) {
-        this.matrixAnswer = matrixAnswer;
-    }
 
     @Override
     public void delete() {

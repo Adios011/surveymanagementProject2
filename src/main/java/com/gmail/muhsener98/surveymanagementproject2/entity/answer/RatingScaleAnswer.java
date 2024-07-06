@@ -10,7 +10,7 @@ import org.hibernate.Hibernate;
 
 @Entity
 @DiscriminatorValue("rating_scale")
-public class RatingScaleAnswer extends Answer{
+public class RatingScaleAnswer extends InnerQuestionAnswer{
 
     @Column(name = "rate")
     private Integer rate;
@@ -22,6 +22,19 @@ public class RatingScaleAnswer extends Answer{
 
     public RatingScaleAnswer(Question question){
         super(question);
+    }
+
+
+
+    @Override
+    public void update(Long newAnswer) {
+        RatingScaleQuestion ratingScaleQuestion = (RatingScaleQuestion) getQuestion();
+
+        int newRate = newAnswer.intValue();
+        newRate = ratingScaleQuestion.checkAndFixInputRate(newRate);
+
+        ratingScaleQuestion.calculateAveragePointAfterUpdatingAnswer(rate , newRate);
+        rate = newRate;
     }
 
     public RatingScaleAnswer(Question question , int rate ){

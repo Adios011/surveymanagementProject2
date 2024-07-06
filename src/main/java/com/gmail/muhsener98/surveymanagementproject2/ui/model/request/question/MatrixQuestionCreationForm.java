@@ -4,13 +4,14 @@ import java.util.List;
 
 public class MatrixQuestionCreationForm extends QuestionCreationForm{
 
-    private List<MultipleChoiceQuestionCreationForm> multipleChoiceQuestions;
+    private  List<InnerQuestionCreationForm> innerQuestions;
 
-    public List<MultipleChoiceQuestionCreationForm> getMultipleChoiceQuestions() {
-        return multipleChoiceQuestions;
+    public List<InnerQuestionCreationForm> getInnerQuestions() {
+        return innerQuestions;
     }
 
-    public void setMultipleChoiceQuestions(List<MultipleChoiceQuestionCreationForm> multipleChoiceQuestions) {
-        this.multipleChoiceQuestions = multipleChoiceQuestions;
+    public void setInnerQuestions(List<InnerQuestionCreationForm> innerQuestions) {
+        this.innerQuestions = innerQuestions;
+        System.out.println("************************** +" + innerQuestions);
     }
 }

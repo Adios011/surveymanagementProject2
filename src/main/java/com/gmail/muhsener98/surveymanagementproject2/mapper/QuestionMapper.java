@@ -33,6 +33,14 @@ public interface QuestionMapper {
     OpenEndedQuestion toEntity(OpenEndedQuestionCreationForm openEndedQuestionCreationForm);
     RatingScaleQuestion toEntity(RatingScaleQuestionCreationForm ratingScaleQuestionCreationForm);
     MatrixQuestion toEntity(MatrixQuestionCreationForm matrixQuestionCreationForm);
+    default InnerQuestion toEntity(InnerQuestionCreationForm innerQuestionCreationForm){
+        if(innerQuestionCreationForm instanceof MultipleChoiceQuestionCreationForm multipleChoiceQuestionCreationForm)
+           return  toEntity(multipleChoiceQuestionCreationForm );
+        else if(innerQuestionCreationForm instanceof RatingScaleQuestionCreationForm ratingScaleQuestionCreationForm)
+            return toEntity(ratingScaleQuestionCreationForm);
+        else
+            throw new IllegalArgumentException("Unknown subclass type: " + innerQuestionCreationForm.getClass().getName());
+    }
 
 
     MultipleChoiceQuestionRest toRest(MultipleChoiceQuestion multipleChoiceQuestion);
@@ -45,8 +53,8 @@ public interface QuestionMapper {
         rest.setQuestionText(matrixQuestion.getQuestionText());
 
         List<Long > ids = new ArrayList<>();
-        for (MultipleChoiceQuestion multipleChoiceQuestion : matrixQuestion.getMultipleChoiceQuestions()) {
-            ids.add(multipleChoiceQuestion.getId());
+        for (InnerQuestion innerQuestion : matrixQuestion.getInnerQuestions()) {
+            ids.add(innerQuestion.getId());
         }
         rest.setInnerQuestionIds(ids);
         return rest;

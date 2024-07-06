@@ -1,6 +1,6 @@
 package com.gmail.muhsener98.surveymanagementproject2.ui.model.request.question;
 
-public class RatingScaleQuestionCreationForm extends QuestionCreationForm{
+public class RatingScaleQuestionCreationForm extends InnerQuestionCreationForm{
 
     private int minRate ;
     private int maxRate;

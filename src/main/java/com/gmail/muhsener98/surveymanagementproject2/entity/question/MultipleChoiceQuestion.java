@@ -13,16 +13,14 @@ import java.util.Map;
 
 @Entity
 @Table(name = "multiple_choice_questions")
-public class MultipleChoiceQuestion extends Question {
+public class MultipleChoiceQuestion extends InnerQuestion {
 
 
     @OneToMany(mappedBy = "question", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE} )
 
     private List<Option> options;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "matrix_questions_id")
-    private MatrixQuestion matrixQuestion;
+
 
 
 
@@ -39,6 +37,9 @@ public class MultipleChoiceQuestion extends Question {
     @Override
     public MultipleChoiceAnswer answer(AnswerForm answerForm) {
         Long chosenOptionId = answerForm.getChosenOptionId();
+        if(chosenOptionId == null || chosenOptionId == 0)
+            throw new IllegalArgumentException("null or 0 optionId for question " + id);
+
         Option option = findOptionById(chosenOptionId);
         if(option == null )
             throw new IllegalArgumentException("Question " + this.id + " has no such option " + chosenOptionId);
@@ -50,8 +51,8 @@ public class MultipleChoiceQuestion extends Question {
         return answer;
     }
 
-    public MultipleChoiceAnswer answer(Long optionId){
-        Option option = findOptionById(optionId);
+    public MultipleChoiceAnswer answer(Number optionId){
+        Option option = findOptionById(optionId.longValue());
         if(option == null)
             throw new IllegalArgumentException("Question " + this.id + " has no such option " + optionId );
 
@@ -106,13 +107,6 @@ public class MultipleChoiceQuestion extends Question {
 
 
 
-    public MatrixQuestion getMatrixQuestion() {
-        return matrixQuestion;
-    }
 
-    public void setMatrixQuestion(MatrixQuestion matrixQuestion) {
-        this.matrixQuestion = matrixQuestion;
-
-    }
 
 }

@@ -13,6 +13,6 @@ public interface MatrixQuestionRepository extends QuestionRepository<MatrixQuest
     @Query("SELECT q FROM MatrixQuestion q " +
             "LEFT JOIN q.survey s " +
             "WHERE s.surveyId = :surveyId")
-    @EntityGraph(attributePaths = "multipleChoiceQuestions" ,type = EntityGraph.EntityGraphType.LOAD)
+    @EntityGraph(attributePaths = "innerQuestions" ,type = EntityGraph.EntityGraphType.LOAD)
     List<MatrixQuestion> findAllBySurveyId(@Param("surveyId") String surveyId);
 }

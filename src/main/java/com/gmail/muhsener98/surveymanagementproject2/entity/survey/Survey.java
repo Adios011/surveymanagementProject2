@@ -62,6 +62,9 @@ public class Survey {
 
     public Participation participate(Map<Long, AnswerForm> answerFormMap) {
 
+        if(answerFormMap == null )
+            throw new IllegalArgumentException("null answerFormMap.");
+
         List<Answer> answers = new ArrayList<>();
         for (Question question : questions) {
             Long questionId = question.getId();
