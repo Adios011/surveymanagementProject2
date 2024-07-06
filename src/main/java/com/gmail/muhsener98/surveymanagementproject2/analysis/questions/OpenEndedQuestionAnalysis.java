@@ -6,8 +6,8 @@ public class OpenEndedQuestionAnalysis extends QuestionAnalysis{
 
     private List<String> answers ;
 
-    public OpenEndedQuestionAnalysis(String questionText) {
-        super(questionText);
+    public OpenEndedQuestionAnalysis(Long questionId , String questionText) {
+        super(questionId, questionText);
     }
 
     public List<String> getAnswers() {

@@ -67,10 +67,15 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     @Transactional(readOnly = true)
     public Survey findSurveyForParticipation(String surveyId) throws SurveyNotFoundException {
-        Survey survey = findSurveyWithAllAssociations(surveyId);
 
+
+        Survey survey = findSurveyWithAllAssociations(surveyId);
         //To avoid n+1 query problem.
         questionService.loadAssociationsOfSubQuestionsForParticipation(surveyId);
+
+
+        //To avoid n+1 query problem.
+
 
         return survey;
 

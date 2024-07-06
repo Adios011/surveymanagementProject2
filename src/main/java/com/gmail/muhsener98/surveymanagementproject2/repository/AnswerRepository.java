@@ -1,10 +1,13 @@
 package com.gmail.muhsener98.surveymanagementproject2.repository;
 
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.Answer;
+import com.gmail.muhsener98.surveymanagementproject2.entity.answer.MatrixAnswer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.MultipleChoiceAnswer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.OpenEndedAnswer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.participation.Participation;
+import jakarta.persistence.Entity;
 import jakarta.persistence.NamedQuery;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -22,6 +25,9 @@ public interface AnswerRepository extends JpaRepository<Answer,Long>  {
 
     @Query(name = "load_multiple_choice_answer_with_all_associations_by_participation")
     List<MultipleChoiceAnswer> findAllMultipleChoiceAnswersWithQuestionByParticipation(@Param("participation")Participation participation);
+
+    @EntityGraph(attributePaths = "multipleChoiceAnswers" , type = EntityGraph.EntityGraphType.LOAD)
+    List<MatrixAnswer> findAllMatrixAnswersWithQuestionByParticipation(@Param("participation") Participation participation);
 
 
 }

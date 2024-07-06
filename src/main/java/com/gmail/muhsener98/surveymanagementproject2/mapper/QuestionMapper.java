@@ -2,12 +2,12 @@ package com.gmail.muhsener98.surveymanagementproject2.mapper;
 
 import com.gmail.muhsener98.surveymanagementproject2.entity.question.*;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.question.*;
-import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.question.MultipleChoiceQuestionRest;
-import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.question.OpenEndedQuestionRest;
-import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.question.QuestionRest;
-import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.question.RatingScaleQuestionRest;
+import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.question.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Mapper(uses = {OptionMapper.class})
 public interface QuestionMapper {
@@ -39,6 +39,19 @@ public interface QuestionMapper {
     OpenEndedQuestionRest toRest(OpenEndedQuestion openEndedQuestion);
     RatingScaleQuestionRest toRest(RatingScaleQuestion ratingScaleQuestion);
 
+    default MatrixQuestionRest toRest(MatrixQuestion matrixQuestion){
+        MatrixQuestionRest rest = new MatrixQuestionRest();
+        rest.setId(matrixQuestion.getId());
+        rest.setQuestionText(matrixQuestion.getQuestionText());
+
+        List<Long > ids = new ArrayList<>();
+        for (MultipleChoiceQuestion multipleChoiceQuestion : matrixQuestion.getMultipleChoiceQuestions()) {
+            ids.add(multipleChoiceQuestion.getId());
+        }
+        rest.setInnerQuestionIds(ids);
+        return rest;
+    }
+
 
     default QuestionRest toRest(Question question){
         if(question instanceof  MultipleChoiceQuestion mcq )
@@ -47,6 +60,8 @@ public interface QuestionMapper {
             return toRest(oeq);
         else if(question instanceof RatingScaleQuestion ratingScaleQuestion)
             return toRest(ratingScaleQuestion);
+        else if(question instanceof MatrixQuestion matrixQuestion)
+            return toRest(matrixQuestion);
         else
             throw new IllegalArgumentException("Unknown subclass type " + question.getClass().getName())    ;
     }

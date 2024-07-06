@@ -40,7 +40,7 @@ public class OpenEndedQuestion extends Question {
 
     @Override
     public OpenEndedQuestionAnalysis analyze() {
-        OpenEndedQuestionAnalysis analysis = new OpenEndedQuestionAnalysis(this.questionText);
+        OpenEndedQuestionAnalysis analysis = new OpenEndedQuestionAnalysis(id , this.questionText);
         analysis.setAnswers(convertAnswersToStringList());
         return analysis;
     }

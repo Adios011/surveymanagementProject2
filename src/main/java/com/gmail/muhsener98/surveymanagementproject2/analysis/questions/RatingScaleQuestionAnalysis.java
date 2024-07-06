@@ -17,8 +17,8 @@ public class RatingScaleQuestionAnalysis extends QuestionAnalysis{
 
     private Integer participantCounter ;
 
-    public RatingScaleQuestionAnalysis(String questionText) {
-        super(questionText);
+    public RatingScaleQuestionAnalysis(Long questionId , String questionText) {
+        super(questionId , questionText);
     }
 
 

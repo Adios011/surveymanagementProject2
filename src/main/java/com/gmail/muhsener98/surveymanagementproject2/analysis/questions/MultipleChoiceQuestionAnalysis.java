@@ -8,6 +8,10 @@ public class MultipleChoiceQuestionAnalysis extends QuestionAnalysis{
     private Map<String,Double> optionTextPercentageMap ;
 
 
+    public MultipleChoiceQuestionAnalysis(Long questionId , String questionText) {
+        super(questionId , questionText);
+    }
+
     public Map<String, Double> getOptionTextPercentageMap() {
         return optionTextPercentageMap;
     }
@@ -16,7 +20,5 @@ public class MultipleChoiceQuestionAnalysis extends QuestionAnalysis{
         this.optionTextPercentageMap = optionTextPercentageMap;
     }
 
-    public MultipleChoiceQuestionAnalysis(String questionText) {
-        super(questionText);
-    }
+
 }

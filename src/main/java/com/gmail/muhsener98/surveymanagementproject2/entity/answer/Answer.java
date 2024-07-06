@@ -16,11 +16,11 @@ public abstract class Answer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "questions_id")
-    private Question question;
+    protected Question question;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "participations_id")
-    private Participation participation;
+    protected Participation participation;
 
     public Answer(Question question) {
         this.question = question;

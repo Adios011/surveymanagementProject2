@@ -21,6 +21,8 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional(readOnly = true)
     public List<MultipleChoiceAnswer> loadAssociationsOfSubAnswers(Participation participation) {
+        answerRepository.findAllMatrixAnswersWithQuestionByParticipation(participation);
         return answerRepository.findAllMultipleChoiceAnswersWithQuestionByParticipation(participation);
+
     }
 }

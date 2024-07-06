@@ -101,7 +101,7 @@ public class RatingScaleQuestion extends Question {
 
     @Override
     public RatingScaleQuestionAnalysis analyze() {
-        RatingScaleQuestionAnalysis analysis = new RatingScaleQuestionAnalysis(questionText);
+        RatingScaleQuestionAnalysis analysis = new RatingScaleQuestionAnalysis( id , questionText);
         BeanUtils.copyProperties(this, analysis);
         return analysis;
     }

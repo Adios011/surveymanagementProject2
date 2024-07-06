@@ -16,7 +16,8 @@ import java.util.Map;
 public class MultipleChoiceQuestion extends Question {
 
 
-    @OneToMany(mappedBy = "question", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "question", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE} )
+
     private List<Option> options;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -61,7 +62,7 @@ public class MultipleChoiceQuestion extends Question {
 
     @Override
     public MultipleChoiceQuestionAnalysis analyze() {
-        MultipleChoiceQuestionAnalysis analysis = new MultipleChoiceQuestionAnalysis(this.questionText);
+        MultipleChoiceQuestionAnalysis analysis = new MultipleChoiceQuestionAnalysis(id, this.questionText);
         Map<String,Double> optionTextPercentageMap = new HashMap<>();
         double total = findNumberOfParticipants();
 

@@ -10,7 +10,13 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "questions")
 @Inheritance(strategy = InheritanceType.JOINED)
-
+@NamedEntityGraph(name = "question_for_analysis" ,
+attributeNodes = {@NamedAttributeNode(value = "questionText" ) }  ,
+subclassSubgraphs = {
+        @NamedSubgraph(name = "subgraph_MCQ" , type = MultipleChoiceQuestion.class , attributeNodes = {@NamedAttributeNode(value = "options")}),
+        @NamedSubgraph(name = "subgraph_OEQ" , type = OpenEndedQuestion.class , attributeNodes = @NamedAttributeNode(value = "answers")),
+        @NamedSubgraph(name = "subgraph_MQ" , type = MatrixQuestion.class , attributeNodes = @NamedAttributeNode(value = "multipleChoiceQuestions"))
+})
 public abstract class Question {
 
     @Id

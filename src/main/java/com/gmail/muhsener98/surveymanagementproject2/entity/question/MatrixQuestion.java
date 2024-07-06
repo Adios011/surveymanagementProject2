@@ -1,15 +1,14 @@
 package com.gmail.muhsener98.surveymanagementproject2.entity.question;
 
+import com.gmail.muhsener98.surveymanagementproject2.analysis.questions.MatrixQuestionAnalysis;
+import com.gmail.muhsener98.surveymanagementproject2.analysis.questions.MultipleChoiceQuestionAnalysis;
 import com.gmail.muhsener98.surveymanagementproject2.analysis.questions.QuestionAnalysis;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.Answer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.MatrixAnswer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.answer.MultipleChoiceAnswer;
 import com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.Map;
 @Table(name = "matrix_questions")
 public class MatrixQuestion extends Question{
 
-    @OneToMany(mappedBy = "matrixQuestion" , cascade = {CascadeType.MERGE , CascadeType.PERSIST , CascadeType.REMOVE})
+    @OneToMany(mappedBy = "matrixQuestion" , cascade = {CascadeType.MERGE , CascadeType.PERSIST , CascadeType.REMOVE} )
     private List<MultipleChoiceQuestion> multipleChoiceQuestions ;
 
     public List<MultipleChoiceQuestion> getMultipleChoiceQuestions() {
@@ -43,7 +42,7 @@ public class MatrixQuestion extends Question{
 
 
     @Override
-    public Answer answer(AnswerForm answerForm) {
+    public MatrixAnswer answer(AnswerForm answerForm) {
         MatrixAnswer matrixAnswer = new MatrixAnswer();
         matrixAnswer.setQuestion(this);
 
@@ -71,7 +70,20 @@ public class MatrixQuestion extends Question{
     }
 
     @Override
-    public QuestionAnalysis analyze() {
-        return null;
+    public MatrixQuestionAnalysis analyze() {
+        MatrixQuestionAnalysis matrixQuestionAnalysis = new MatrixQuestionAnalysis(id , questionText);
+        matrixQuestionAnalysis.setInnerQuestionIds(getInnerQuestionIds());
+        return matrixQuestionAnalysis;
     }
+
+
+    private List<Long> getInnerQuestionIds(){
+        List<Long> ids = new ArrayList<>();
+        for (MultipleChoiceQuestion multipleChoiceQuestion : multipleChoiceQuestions) {
+            ids.add(multipleChoiceQuestion.getId());
+        }
+        return ids;
+    }
+
+
 }

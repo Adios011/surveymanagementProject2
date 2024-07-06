@@ -57,8 +57,11 @@ public class MultipleChoiceAnswer extends Answer{
 
     @Override
     public void delete() {
-        option.decreaseCounter();
-        option = null ;
+        if(option != null){
+            option.decreaseCounter();
+            option = null ;
+        }
+
     }
 
     @Override
@@ -68,6 +71,20 @@ public class MultipleChoiceAnswer extends Answer{
         MultipleChoiceQuestion question = (MultipleChoiceQuestion) getQuestion();
         Long newOptionId = answerForm.getChosenOptionId();
         Option newOption = question.findOptionById(newOptionId);
+        if(newOption == null)
+            throw new IllegalArgumentException("Question " + question.getId() + " has no such Option " + newOptionId);
+        newOption.increaseCounter();
+
+        this.option = newOption;
+    }
+
+    public void update(Long newOptionId){
+        if(this.option == null )
+            return;
+
+        this.option.decreaseCounter();
+        MultipleChoiceQuestion multipleChoiceQuestion = (MultipleChoiceQuestion)  getQuestion();
+        Option newOption = multipleChoiceQuestion.findOptionById(newOptionId);
         if(newOption == null)
             throw new IllegalArgumentException("Question " + question.getId() + " has no such Option " + newOptionId);
         newOption.increaseCounter();
