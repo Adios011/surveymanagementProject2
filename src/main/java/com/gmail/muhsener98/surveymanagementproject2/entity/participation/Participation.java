@@ -6,7 +6,6 @@ import com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey;
 import com.gmail.muhsener98.surveymanagementproject2.entity.user.MyUser;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
 import jakarta.persistence.*;
-import jakarta.servlet.http.Part;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,7 @@ import java.util.Map;
 public class Participation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

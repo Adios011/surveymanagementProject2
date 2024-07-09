@@ -5,10 +5,10 @@ import com.gmail.muhsener98.surveymanagementproject2.entity.survey.Survey;
 import com.gmail.muhsener98.surveymanagementproject2.entity.user.MyUser;
 import com.gmail.muhsener98.surveymanagementproject2.exceptions.ParticipationNotFoundException;
 import com.gmail.muhsener98.surveymanagementproject2.repository.ParticipationRepository;
+import com.gmail.muhsener98.surveymanagementproject2.service.AnswerService;
 import com.gmail.muhsener98.surveymanagementproject2.service.ParticipationService;
 import com.gmail.muhsener98.surveymanagementproject2.service.QuestionService;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
-import jakarta.servlet.http.Part;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +27,9 @@ public class ParticipationServiceImpl implements ParticipationService {
 
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private AnswerService answerService;
 
     @Override
     public boolean checkParticipationExists(MyUser user, Survey survey) {
@@ -78,10 +81,15 @@ public class ParticipationServiceImpl implements ParticipationService {
 
     @Transactional(readOnly = true)
     public Participation findParticipationWithAnswersAndQuestions(MyUser user , Survey survey){
+        System.out.println("During findParticipationWithAnswers *****");
         Participation participation = findParticipationWithAnswers(user,survey);
+        System.out.println("During findParticipationWithAnswers *****");
+
 
         //To avoid n+1 query when accessing options of questions.
-        questionService.loadAssociationsOfSubQuestionsForParticipation(survey.getSurveyId());
+        answerService.loadAssociationsOfSubAnswers(participation);
+        questionService.loadAssociationsOfMultipleChoiceQuestions(survey.getSurveyId());
+        questionService.loadAssociationsOfMatrixQuestions(survey.getSurveyId());
         return participation;
     }
 
@@ -89,6 +97,8 @@ public class ParticipationServiceImpl implements ParticipationService {
     @Override
     @Transactional
     public Participation findParticipationWithAnswers(MyUser user, Survey survey) {
+
+
         Participation participation = participationRepository.findWithAnswersByUserAndSurvey(user,survey);
         if(participation == null)
             throw new ParticipationNotFoundException("participation not found.");

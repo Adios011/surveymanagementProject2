@@ -23,11 +23,11 @@ public interface AnswerRepository extends JpaRepository<Answer,Long>  {
 //    Answer findById(Long id );
 //    Answer save(Answer entity);
 
-    @Query(name = "load_multiple_choice_answer_with_all_associations_by_participation")
-    List<MultipleChoiceAnswer> findAllMultipleChoiceAnswersWithQuestionByParticipation(@Param("participation")Participation participation);
+    @EntityGraph(attributePaths = "option" , type = EntityGraph.EntityGraphType.LOAD)
+    List<MultipleChoiceAnswer> findAllMultipleChoiceAnswersWithQuestionByParticipation(Participation participation);
 
-    @EntityGraph(attributePaths = "multipleChoiceAnswers" , type = EntityGraph.EntityGraphType.LOAD)
-    List<MatrixAnswer> findAllMatrixAnswersWithQuestionByParticipation(@Param("participation") Participation participation);
+    @EntityGraph(attributePaths = "innerQuestionAnswers" , type = EntityGraph.EntityGraphType.LOAD)
+    List<MatrixAnswer> findAllMatrixAnswersWithQuestionByParticipation( Participation participation);
 
 
 }

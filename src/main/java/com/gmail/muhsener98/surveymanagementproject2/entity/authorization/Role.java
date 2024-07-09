@@ -2,7 +2,6 @@ package com.gmail.muhsener98.surveymanagementproject2.entity.authorization;
 
 import com.gmail.muhsener98.surveymanagementproject2.entity.user.MyUser;
 import jakarta.persistence.*;
-import org.apache.catalina.User;
 
 import java.util.List;
 

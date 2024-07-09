@@ -14,7 +14,7 @@ import org.hibernate.annotations.BatchSize;
 public class Option {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id ;
 
     @Column(name = "option_text" , nullable = false)

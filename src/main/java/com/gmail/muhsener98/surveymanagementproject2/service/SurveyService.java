@@ -8,8 +8,7 @@ import com.gmail.muhsener98.surveymanagementproject2.exceptions.SurveyNotFoundEx
 import com.gmail.muhsener98.surveymanagementproject2.shared.constants.SurveyOpenStatus;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.survey.SurveyCreationForm;
-import org.apache.catalina.User;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.Map;

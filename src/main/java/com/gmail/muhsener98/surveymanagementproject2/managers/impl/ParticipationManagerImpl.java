@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service("participationManager")
 public class ParticipationManagerImpl implements ParticipationManager {
@@ -32,6 +34,9 @@ public class ParticipationManagerImpl implements ParticipationManager {
     @Autowired
     private AnswerService answerService;
 
+    private final Logger logger = Logger.getLogger("org.hibernate.stat");
+
+
     @Transactional
     public void handleParticipation(String userId, String surveyId, Map<Long, AnswerForm> answerFormMap) {
         Survey survey = surveyService.findSurveyWithoutAssociations(surveyId);
@@ -48,8 +53,10 @@ public class ParticipationManagerImpl implements ParticipationManager {
 
     @Transactional
     private void handleNewParticipation(MyUser user, String surveyId, Map<Long, AnswerForm> answerFormMap) {
+
         Survey survey = surveyService.findSurveyForParticipation(surveyId);
         Participation participation = surveyService.participateIn(user, survey, answerFormMap);
+
 
         participationService.add(participation);
     }
@@ -67,7 +74,8 @@ public class ParticipationManagerImpl implements ParticipationManager {
     @Transactional(readOnly = true)
     private Participation findParticipationWithAnswersAndQuestions(MyUser user , Survey survey){
         //To avoid n+1 query when accessing options of questions.
-        questionService.loadAssociationsOfSubQuestionsForParticipation(survey.getSurveyId());
+        questionService.loadAssociationsOfMatrixQuestions(survey.getSurveyId());
+        questionService.loadAssociationsOfMultipleChoiceQuestions(survey.getSurveyId());
         return participationService.findParticipationWithAnswers(user,survey);
     }
 

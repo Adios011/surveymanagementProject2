@@ -9,6 +9,10 @@ import com.gmail.muhsener98.surveymanagementproject2.shared.constants.SurveyOpen
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.survey.SurveyCreationForm;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey.SurveyRest;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey.SurveyRestWithoutAssociations;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +57,11 @@ public class SurveyController {
 
 
     @GetMapping
+    @Parameters({
+            @Parameter(name = "Authorization" , description = "${swagger.authorizationHeader.description}" , in = ParameterIn.HEADER)
+    })
     public ResponseEntity<List<SurveyRestWithoutAssociations>> getAllSurveyByOpenStatus(@RequestParam(name = "openStatus", defaultValue = "OPEN") String openStatus,
+
                                                                                         @RequestParam(name = "page", defaultValue = "0") int page,
                                                                                         @RequestParam(name = "limit", defaultValue = "10") int limit) {
         SurveyOpenStatus status = SurveyOpenStatus.OPEN;

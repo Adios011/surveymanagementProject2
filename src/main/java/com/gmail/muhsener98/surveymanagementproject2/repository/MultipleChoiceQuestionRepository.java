@@ -12,7 +12,7 @@ public interface MultipleChoiceQuestionRepository extends QuestionRepository<Mul
 
 
     @Query("Select q FROM MultipleChoiceQuestion q " +
-            "LEFT JOIN q.survey s " +
+            "JOIN q.survey s " +
             "WHERE s.surveyId = :surveyId ")
     @EntityGraph(attributePaths = "options" , type = EntityGraph.EntityGraphType.LOAD)
     List<MultipleChoiceQuestion> findAllBySurveyId(@Param("surveyId") String surveyId);

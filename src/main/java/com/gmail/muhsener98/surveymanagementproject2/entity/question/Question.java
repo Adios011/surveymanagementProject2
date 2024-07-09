@@ -20,7 +20,7 @@ subclassSubgraphs = {
 public abstract class Question {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     protected Long id ;
 
     @Column(name = "question_text" , nullable = false)

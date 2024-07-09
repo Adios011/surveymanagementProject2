@@ -16,7 +16,7 @@ import java.util.Map;
 public class MultipleChoiceQuestion extends InnerQuestion {
 
 
-    @OneToMany(mappedBy = "question", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE} )
+    @OneToMany(mappedBy = "question", cascade = { CascadeType.ALL} )
 
     private List<Option> options;
 

@@ -44,8 +44,10 @@ public class RatingScaleAnswer extends InnerQuestionAnswer{
 
     @Override
     public void delete() {
-//         Hibernate.unproxy(getQuestion());
+         if(rate == null)
+             return ;
         RatingScaleQuestion ratingScaleQuestion = (RatingScaleQuestion) getQuestion();
+
         ratingScaleQuestion.calculateAveragePointAfterDeletingAnswer(rate);
         rate = null;
     }

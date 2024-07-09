@@ -30,8 +30,12 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Transactional(readOnly = true)
-    public void loadAssociationsOfSubQuestionsForParticipation(String surveyId){
+    public void loadAssociationsOfMultipleChoiceQuestions(String surveyId){
         multipleChoiceQuestionRepository.findAllBySurveyId(surveyId);
+    }
+
+    @Transactional(readOnly = true)
+    public void loadAssociationsOfMatrixQuestions(String surveyId){
         matrixQuestionRepository.findAllBySurveyId(surveyId);
     }
 

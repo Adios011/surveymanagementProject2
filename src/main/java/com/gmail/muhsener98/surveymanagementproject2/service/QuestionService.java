@@ -5,7 +5,8 @@ import com.gmail.muhsener98.surveymanagementproject2.exceptions.QuestionNotFound
 
 public interface QuestionService {
 
-     void loadAssociationsOfSubQuestionsForParticipation(String surveyId);
+     void loadAssociationsOfMultipleChoiceQuestions(String surveyId);
+     void loadAssociationsOfMatrixQuestions(String surveyId);
      void loadAssociationsOfSubQuestionsForAnalysis(String surveyId);
 
      Question findQuestion(Long id ) throws QuestionNotFoundException;

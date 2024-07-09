@@ -9,6 +9,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,8 @@ import java.util.Map;
 @DiscriminatorValue("matrix_answer")
 public class MatrixAnswer extends Answer {
 
-    @OneToMany(mappedBy = "matrixAnswer", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "matrixAnswer", cascade = {CascadeType.ALL} )
+    @BatchSize(size = 10)
     private List<InnerQuestionAnswer> innerQuestionAnswers;
 
 

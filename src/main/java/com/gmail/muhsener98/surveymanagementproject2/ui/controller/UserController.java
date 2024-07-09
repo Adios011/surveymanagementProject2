@@ -52,6 +52,7 @@ public class UserController {
 
 
     @PostMapping("/{userId}/surveys/{surveyId}")
+
     public ResponseEntity<OperationStatusModel> participateInSurvey(@PathVariable(name = "userId") String userId,
                                                                     @PathVariable(name = "surveyId") String surveyId,
                                                                     @RequestBody List<AnswerForm> answerFormList) {

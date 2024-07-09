@@ -8,6 +8,7 @@ import com.gmail.muhsener98.surveymanagementproject2.entity.question.Question;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.response.survey.SurveyRestWithoutAssociations;
 import jakarta.persistence.*;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.Map;
 @Table(name = "surveys")
 public class Survey {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(name = "survey_id", nullable = false)

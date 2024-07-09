@@ -6,16 +6,12 @@ import com.gmail.muhsener98.surveymanagementproject2.entity.question.Option;
 import com.gmail.muhsener98.surveymanagementproject2.entity.question.Question;
 import com.gmail.muhsener98.surveymanagementproject2.ui.model.request.participation.AnswerForm;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
 
 @Entity
 //@Table(name = "multiple_choice_answers")
 @DiscriminatorValue("multiple_choice")
-@NamedQuery(name = "load_multiple_choice_answer_with_all_associations_by_participation" ,
-query = "SELECT mca " +
-        "FROM MultipleChoiceAnswer mca " +
-        "JOIN  mca.participation p " +
-        "JOIN FETCH mca.option o " +
-        "WHERE p = :participation")
+
 public class MultipleChoiceAnswer extends InnerQuestionAnswer{
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,11 +43,12 @@ public class MultipleChoiceAnswer extends InnerQuestionAnswer{
 
     @Override
     public void delete() {
-        if(option != null){
-            option.decreaseCounter();
-            option = null ;
-        }
+        if(option == null)
+            return;
 
+
+        option.decreaseCounter();
+        option = null ;
     }
 
     @Override
